@@ -1,5 +1,8 @@
 #include"StartScene.h"
 #include"HelpScene.h"
+#include"SettingScene.h"
+
+#include"SimpleAudioEngine.h"
 
 #include"cocos2d.h"
 
@@ -29,7 +32,7 @@ bool StartScene::init()
 
 
 	//加入StartScene背景图片
-	auto pSprite = Sprite::create("StartBackground.jpg");
+	auto pSprite = Sprite::create("StartSceneBg.jpg");
 	pSprite->setPosition(visibleSize/2);
 	addChild(pSprite,-1);
 
@@ -37,18 +40,18 @@ bool StartScene::init()
 	auto pMenu = Menu::create();
 	pMenu->setPosition(origin);
 
-	//Play
+/*	//Play
 	auto pMenuPlay = MenuItemFont::create("Play", CC_CALLBACK_1(StartScene::menuPlayCallback, this));
 	pMenuPlay->setColor(Color3B::BLACK);
 	pMenuPlay->setPosition(visibleSize / 2);
 	pMenu->addChild(pMenuPlay);
-
+*/	
 	//Setting
 	auto pMenuSetting = MenuItemFont::create("Setting", CC_CALLBACK_1(StartScene::menuSettingCallback, this));
 	pMenuSetting->setColor(Color3B::BLACK);
 	pMenuSetting->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 50);
 	pMenu->addChild(pMenuSetting);
-	
+
 	//Help
 	auto pMenuHelp = MenuItemFont::create("Help", CC_CALLBACK_1(StartScene::menuHelpCallback, this));
 	pMenuHelp->setColor(Color3B::BLACK);
@@ -63,32 +66,31 @@ bool StartScene::init()
 
 	addChild(pMenu);
 
+
+	//play background music
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/AngleAndDevil.mp3", true);
+
+
 	return true;
 }
 
-// music
-void StartScene::onEnter()
-{
-	Scene::onEnter();
-	//
-}
 
 //Callback实现
-void StartScene::menuPlayCallback(Ref*)
+/*void StartScene::menuPlayCallback(Ref*)
 {
-	Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, RoomScene::createScene()));
-}
+	Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, RoomScene::createScene(),true));
+}*/
 
 
 void StartScene::menuSettingCallback(Ref*)
 {
-	Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, SettingScene::createScene()));
+	Director::getInstance()->pushScene(TransitionFade::create(1.0f, SettingScene::createScene()));
 }
 
 
 void StartScene::menuHelpCallback(Ref*)
 {
-	Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, HelpScene::createScene()));
+	Director::getInstance()->pushScene(TransitionFade::create(1.0f, HelpScene::createScene()));
 }
 
 

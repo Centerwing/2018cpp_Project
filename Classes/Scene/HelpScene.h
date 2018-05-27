@@ -13,8 +13,14 @@ public:
 	CREATE_FUNC(HelpScene);
 
 private:
+	void menuNextCallback(Ref* pRef);
+	void menuLastCallback(Ref* pRef);
+	void menuCloseCallback(Ref* pRef);
 
+	void createHelpBg1();
+	void createHelpBg2();
 
+	//void onEnter();
 };
 
 

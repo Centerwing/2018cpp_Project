@@ -13,12 +13,12 @@ public:
 	CREATE_FUNC(StartScene);
 
 private:
-	void menuPlayCallback(Ref* pRef);
+	//void menuPlayCallback(Ref* pRef);
 	void menuSettingCallback(Ref* pRef);
 	void menuHelpCallback(Ref* pRef);
 	void menuExitCallback(Ref* pRef);
 
-	void onEnter();
+	
 };
 
 #endif
