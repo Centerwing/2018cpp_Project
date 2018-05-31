@@ -68,7 +68,7 @@ void HelpScene::createHelpBg1()
 	pScene->addChild(pLayer);
 
 
-	auto pHelpBg1 = Sprite::create("HelpSceneBg1.jpg");
+	auto pHelpBg1 = Sprite::create("Background/HelpSceneBg1.jpg");
 	pHelpBg1->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	pLayer->addChild(pHelpBg1, -1);
 
@@ -99,7 +99,7 @@ void HelpScene::createHelpBg2()
 	pScene->addChild(pLayer);
 
 
-	auto pHelpBg2 = Sprite::create("HelpSceneBg2.jpg");
+	auto pHelpBg2 = Sprite::create("Background/HelpSceneBg2.jpg");
 	pHelpBg2->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	pLayer->addChild(pHelpBg2, -1);
 
@@ -124,15 +124,24 @@ void HelpScene::createHelpBg2()
 
 void HelpScene::menuNextCallback(Ref* pRef)
 {
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
 	HelpScene::createHelpBg2();
 }
 
 void HelpScene::menuLastCallback(Ref* pRef)
 {
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
 	HelpScene::createHelpBg1();
 }
 
 void HelpScene::menuCloseCallback(Ref* Ref)
 {
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
 	Director::getInstance()->popScene();
 }

@@ -31,12 +31,12 @@ bool StartScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 
-	//加入StartScene背景图片
-	auto pSprite = Sprite::create("StartSceneBg.jpg");
+	//===========================加入StartScene背景图片==================================
+	auto pSprite = Sprite::create("Background/StartSceneBg.png");
 	pSprite->setPosition(visibleSize/2);
 	addChild(pSprite,-1);
 
-	//加入菜单
+	//===========================加入菜单=======================
 	auto pMenu = Menu::create();
 	pMenu->setPosition(origin);
 
@@ -47,28 +47,21 @@ bool StartScene::init()
 	pMenu->addChild(pMenuPlay);
 */	
 	//Setting
-	auto pMenuSetting = MenuItemFont::create("Setting", CC_CALLBACK_1(StartScene::menuSettingCallback, this));
-	pMenuSetting->setColor(Color3B::BLACK);
-	pMenuSetting->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 50);
+	auto pMenuSetting = MenuItemImage::create("icons/OptionButton.png", "icons/OptionButtonSelected.png", CC_CALLBACK_1(StartScene::menuSettingCallback, this));
+	pMenuSetting->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 40);
 	pMenu->addChild(pMenuSetting);
 
 	//Help
-	auto pMenuHelp = MenuItemFont::create("Help", CC_CALLBACK_1(StartScene::menuHelpCallback, this));
-	pMenuHelp->setColor(Color3B::BLACK);
-	pMenuHelp->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 100);
+	auto pMenuHelp = MenuItemImage::create("icons/HelpButton.png", "icons/HelpButtonSelected.png", CC_CALLBACK_1(StartScene::menuHelpCallback, this));
+	pMenuHelp->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 120);
 	pMenu->addChild(pMenuHelp);
 
 	//Exit
-	auto pMenuExit = MenuItemFont::create("Exit", CC_CALLBACK_1(StartScene::menuExitCallback, this));
-	pMenuExit->setColor(Color3B::BLACK);
-	pMenuExit->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 150);
+	auto pMenuExit = MenuItemImage::create("icons/ExitButton.png", "icons/ExitButtonSelected.png", CC_CALLBACK_1(StartScene::menuExitCallback, this));
+	pMenuExit->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 200);
 	pMenu->addChild(pMenuExit);
 
 	addChild(pMenu);
-
-
-	//play background music
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/AngleAndDevil.mp3", true);
 
 
 	return true;
@@ -78,27 +71,33 @@ bool StartScene::init()
 //Callback实现
 /*void StartScene::menuPlayCallback(Ref*)
 {
-	Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, RoomScene::createScene(),true));
+	Director::getInstance()->pushScene(TransitionPageTurn::create(1.2f, RoomScene::createScene(),true));
 }*/
 
 
 void StartScene::menuSettingCallback(Ref*)
 {
-	Director::getInstance()->pushScene(TransitionFade::create(1.0f, SettingScene::createScene()));
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
+	Director::getInstance()->pushScene(TransitionFade::create(1.2f, SettingScene::createScene()));
 }
 
 
 void StartScene::menuHelpCallback(Ref*)
 {
-	Director::getInstance()->pushScene(TransitionFade::create(1.0f, HelpScene::createScene()));
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
+	Director::getInstance()->pushScene(TransitionFade::create(1.2f, HelpScene::createScene()));
 }
 
 
 void StartScene::menuExitCallback(Ref*)
 {
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
 	Director::getInstance()->end();
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
 }

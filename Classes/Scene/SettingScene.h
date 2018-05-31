@@ -13,12 +13,12 @@ public:
 	CREATE_FUNC(SettingScene);
 
 
-	//void stopMusic();
 
 	void menuCloseCallback(cocos2d::Ref* pRef);
 	void menuBgMusicCallback(cocos2d::Ref* pRef);
+	void menuEffectCallback(cocos2d::Ref* Ref);
 
-	//void onEnter();
+
 };
 
 
