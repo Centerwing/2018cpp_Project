@@ -28,11 +28,11 @@ bool SettingScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 
-	auto pSettingBg = Sprite::create("Background/SettingSceneBg.jpg");
+	auto pSettingBg = Sprite::create("background/SettingSceneBg.jpg");
 	pSettingBg->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	addChild(pSettingBg, -1);
 
-	//============================BgMusic button=================
+	//=================BgMusic button=================
 	auto pBgMusicOn = Sprite::create("icons/BgMusicOn.png");
 	auto pBgMusicOff = Sprite::create("icons/BgMusicOff.png");
 
@@ -54,7 +54,7 @@ bool SettingScene::init()
 	this->addChild(pBgMenu);
 
 
-	//======================effect music button==================
+	//===================effect music button==================
 	auto pEffectOn = Sprite::create("icons/BgMusicOn.png");
 	auto pEffectOff = Sprite::create("icons/BgMusicOff.png");
 

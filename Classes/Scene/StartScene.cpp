@@ -32,7 +32,7 @@ bool StartScene::init()
 
 
 	//===========================¼ÓÈëStartScene±³¾°Í¼Æ¬==================================
-	auto pSprite = Sprite::create("Background/StartSceneBg.png");
+	auto pSprite = Sprite::create("background/StartSceneBg.png");
 	pSprite->setPosition(visibleSize/2);
 	addChild(pSprite,-1);
 

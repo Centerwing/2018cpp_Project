@@ -20,10 +20,19 @@ private:
 
 	RoomManager * _roomManager;
 
+	cocos2d::ui::Button * readyButton;
+	cocos2d::Vector<TeamBox*> teamBoxes;
+
+	bool isReady;
+
 	std::function<void(bool)> readyButtonCallBack;
 	std::function<void(int)> teamChangeCallback;
 
+	void menuCloseCallback(cocos2d::Ref* pRef);
+
 	void createUI();
+
+	void createListener();
 
 	void createReadyButton();
 

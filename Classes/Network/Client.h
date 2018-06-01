@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 #include "network/WebSocket.h"
-//#include "api_generated.h"
+
 #include <unordered_map>
 
 #define NETWORK
