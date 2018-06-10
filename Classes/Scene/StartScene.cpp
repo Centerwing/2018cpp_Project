@@ -1,4 +1,5 @@
 #include"StartScene.h"
+#include"RoomScene.h"
 #include"HelpScene.h"
 #include"SettingScene.h"
 
@@ -32,7 +33,7 @@ bool StartScene::init()
 
 
 	//===========================加入StartScene背景图片==================================
-	auto pSprite = Sprite::create("background/StartSceneBg.png");
+	auto pSprite = Sprite::create("background/StartSceneBg.jpg");
 	pSprite->setPosition(visibleSize/2);
 	addChild(pSprite,-1);
 
@@ -40,12 +41,11 @@ bool StartScene::init()
 	auto pMenu = Menu::create();
 	pMenu->setPosition(origin);
 
-/*	//Play
-	auto pMenuPlay = MenuItemFont::create("Play", CC_CALLBACK_1(StartScene::menuPlayCallback, this));
-	pMenuPlay->setColor(Color3B::BLACK);
-	pMenuPlay->setPosition(visibleSize / 2);
+	//Play
+	auto pMenuPlay = MenuItemImage::create("icons/PlayButton.png","icons/PlayButtonSelected.png", CC_CALLBACK_1(StartScene::menuPlayCallback, this));
+	pMenuPlay->setPosition(visibleSize.width / 2, visibleSize.height / 2 + 40);
 	pMenu->addChild(pMenuPlay);
-*/	
+	
 	//Setting
 	auto pMenuSetting = MenuItemImage::create("icons/OptionButton.png", "icons/OptionButtonSelected.png", CC_CALLBACK_1(StartScene::menuSettingCallback, this));
 	pMenuSetting->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 40);
@@ -68,11 +68,13 @@ bool StartScene::init()
 }
 
 
-//Callback实现
-/*void StartScene::menuPlayCallback(Ref*)
+void StartScene::menuPlayCallback(Ref*)
 {
-	Director::getInstance()->pushScene(TransitionPageTurn::create(1.2f, RoomScene::createScene(),true));
-}*/
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
+	Director::getInstance()->pushScene(TransitionFade::create(1.2f, RoomScene::createScene()));
+}
 
 
 void StartScene::menuSettingCallback(Ref*)

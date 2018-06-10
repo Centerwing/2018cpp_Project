@@ -1,5 +1,7 @@
 #include "TeamBox.h"
 
+USING_NS_CC;
+
 bool TeamBox::init()
 {
 	auto bg = Sprite::create("RoomScene/teamBoxBg.png");
@@ -7,9 +9,9 @@ bool TeamBox::init()
 	addChild(bg, -1);
 
 	if (this->_team == Team1)
-		this->initWithFile("RoomScene/team1/unselected.png");                     /////////////////////////////
+		this->initWithFile("RoomScene/team1/unSelected.png");           
 	else if (this->_team == Team2)
-		this->initWithFile("RoomScene/team2/unselected.png");                    //////////////////////////////
+		this->initWithFile("RoomScene/team2/unSelected.png");                 
 	return true;
 }
 
@@ -34,8 +36,23 @@ void TeamBox::setChosen(bool choice)
 		isChosen = choice;
 
 		if (this->_team == Team1)
-			this->setTexture(cocos2d::Sprite::create("roomScene/team1/" + isChosen ? "selected.png" : "unselected.png")
-			->getTexture());
+		{
+			if (isChosen)
+				this->setTexture(Sprite::create("roomScene/team1/selected.png")
+					->getTexture());
+			else
+				this->setTexture(Sprite::create("roomScene/team1/unSelected.png")
+					->getTexture());
+		}
+		else if (this->_team == Team2)
+		{
+			if (isChosen)
+				this->setTexture(Sprite::create("roomScene/team2/selected.png")
+					->getTexture());
+			else
+				this->setTexture(Sprite::create("roomScene/team2/unSelected.png")
+					->getTexture());
+		}
 	}
 }
 

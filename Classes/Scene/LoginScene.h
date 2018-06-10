@@ -14,10 +14,10 @@ public:
 	CREATE_FUNC(LoginScene);
 
 private:
-	void menuLoginCallback(cocos2d::Ref* pRef);
 
 	void createLoginButton();
 	void createInputBox();
+
 	void textFieldEvent(cocos2d::Ref* sender, cocos2d::ui::TextField::EventType event);
 
 	cocos2d::ui::TextField* usernameInput;

@@ -1,8 +1,8 @@
 #include "Client.h"
-#include "Settings.h"
+
 
 USING_NS_CC;
-using namespace API;
+//using namespace API;
 
 Client::~Client()
 {
@@ -23,7 +23,7 @@ Client * Client::getInstance()
 bool Client::connect(const std::string & addr)
 {
 	if (_ws == nullptr) _ws = new WebSocket();
-	return _ws->init(*this, Settings::Server::addr);
+	return _ws->init(*this,"ws://115.159.188.148:4000" );
 }
 
 bool Client::isConnected()
@@ -38,9 +38,9 @@ void Client::onOpen(WebSocket * ws)
 
 void Client::onMessage(WebSocket * ws, const WebSocket::Data & data)
 {
-	auto msg = GetMsg(data.bytes);
-	auto func = getFunc(msg->data_type());
-	if (func) func(msg->data());
+	//auto msg = GetMsg(data.bytes);
+	//auto func = getFunc(msg->data_type());
+	//if (func) func(msg->data());
 }
 
 void Client::onClose(WebSocket * ws)

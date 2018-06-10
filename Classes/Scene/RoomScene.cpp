@@ -1,7 +1,8 @@
 #include"RoomScene.h"
-#include"UI\UserBox.h"
-#include"UI\TeamBox.h"
-#include"Network\Client.h"
+#include"Manager/RoomManager.h"
+#include"UI/UserBox.h"
+#include"UI/TeamBox.h"
+#include"Network/Client.h"
 
 #include"cocos2d.h"
 #include"SimpleAudioEngine.h"
@@ -31,18 +32,20 @@ bool RoomScene::init()
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
 
-	_roomManager = RoomManager::create();
-	addChild(_roomManager, 1);
+	//_roomManager = RoomManager::create();
+	//addChild(_roomManager, 1);
 
-	readyButtonCallBack = CC_CALLBACK_1(RoomManager::onUserChangeStats, _roomManager);
-	teamChangeCallback = CC_CALLBACK_1(RoomManager::onUserChangeRole, _roomManager);
+	//readyButtonCallBack = CC_CALLBACK_1(RoomManager::onUserChangeStats, _roomManager);
+	//teamChangeCallback = CC_CALLBACK_1(RoomManager::onUserChangeTeam, _roomManager);
 
-	addChild(_roomManager, -1);
-
+	//addChild(_roomManager, -1);
+	
 	//==========create background=========
-	auto pRoomBg = Sprite::create("background/RoomSceneBg.jpg");
+	auto pRoomBg = Sprite::create("background/RoomSceneBg.png");
 	pRoomBg->setPosition(visibleSize/2);
+	addChild(pRoomBg);
 
+	createUI();
 	//auto chatBox = ChatBox::create();
 
 	return true;
@@ -55,20 +58,20 @@ void RoomScene::createUI()
 	for (int i = 1; i < 3; i++) 
 	{
 		auto _userBox = UserBox::create();
-		_userBox->setPosition(visibleSize.width/3*i,visibleSize.height*0.68f);
+		_userBox->setPosition(visibleSize.width/3*i,visibleSize.height*0.61f);
 		addChild(_userBox);
 
-		roomManager->userBoxes.pushBack(_userBox);
+		//roomManager->userBoxes.pushBack(_userBox);
 	}
 
 
 	//=============create teambox===============
 	for (int i = 1; i < 3; ++i)
 	{
-		auto teamBox = TeamBox::create(static_cast<TeamBox::teamChoice>(i));
+		auto teamBox = TeamBox::create(static_cast<TeamBox::teamChoice>(i-1));
 		teamBox->setPosition(Vec2(
-			visibleSize.width * 0.5f + 2 * i * teamBox->getContentSize().width,
-			visibleSize.height * 0.3f));
+			visibleSize.width * 0.6f + 2 * i * teamBox->getContentSize().width,
+			visibleSize.height * 0.2f));
 		addChild(teamBox);
 		teamBoxes.pushBack(teamBox);
 	}
@@ -138,7 +141,7 @@ void RoomScene::createReadyButton()
 	{
 		return isReady ? "Cancel" : "Ready";
 	};
-	readyButton = ui::Button::create("RoomScene/button_normal.png", "RoomScene/button_selected.png");
+	readyButton = ui::Button::create("icons/Button.png", "icons/ButtonSelected.png");
 	readyButton->setTitleText(getShowText(isReady));
 	readyButton->setTitleFontSize(32);
 

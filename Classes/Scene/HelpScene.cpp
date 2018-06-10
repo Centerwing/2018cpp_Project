@@ -42,9 +42,9 @@ bool HelpScene::init()
 	addChild(pNextMenu);
 
 	//back
-	auto pBack = MenuItemImage::create("icons/help_back.png", "icons/help_backSelected.png", this, menu_selector(HelpScene::menuCloseCallback));
+	auto pBack = MenuItemImage::create("icons/Back.png", "icons/BackSelected.png", this, menu_selector(HelpScene::menuCloseCallback));
 	auto pBackMenu = Menu::create(pBack, NULL);
-	pBackMenu->setPosition(40, visibleSize.height - 40);
+	pBackMenu->setPosition(64, visibleSize.height - 40);
 	addChild(pBackMenu);
 
 
@@ -79,9 +79,9 @@ void HelpScene::createHelpBg1()
 	pLayer->addChild(pNextMenu);
 
 	//back
-	auto pBack = MenuItemImage::create("icons/help_back.png", "icons/help_backSelected.png", this, menu_selector(HelpScene::menuCloseCallback));
+	auto pBack = MenuItemImage::create("icons/Back.png", "icons/BackSelected.png", this, menu_selector(HelpScene::menuCloseCallback));
 	auto pBackMenu = Menu::create(pBack, NULL);
-	pBackMenu->setPosition(40, visibleSize.height - 40);
+	pBackMenu->setPosition(64, visibleSize.height - 40);
 	pLayer->addChild(pBackMenu);
 
 
@@ -111,9 +111,9 @@ void HelpScene::createHelpBg2()
 
 
 	//back
-	auto pBack = MenuItemImage::create("icons/help_back.png", "icons/help_backSelected.png", this, menu_selector(HelpScene::menuCloseCallback));
+	auto pBack = MenuItemImage::create("icons/Back.png", "icons/BackSelected.png", this, menu_selector(HelpScene::menuCloseCallback));
 	auto pBackMenu = Menu::create(pBack, NULL);
-	pBackMenu->setPosition(40, visibleSize.height - 40);
+	pBackMenu->setPosition(64, visibleSize.height - 40);
 	pLayer->addChild(pBackMenu);
 
 	Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, pScene, false));

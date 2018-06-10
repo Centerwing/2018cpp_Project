@@ -50,7 +50,7 @@ bool SettingScene::init()
 	}
 
 	auto pBgMenu = Menu::create(pMusicToggle, nullptr);
-	pBgMenu->setPosition(visibleSize.width / 2 + 150, visibleSize.height / 2);
+	pBgMenu->setPosition(675, visibleSize.height - 306);
 	this->addChild(pBgMenu);
 
 
@@ -72,14 +72,14 @@ bool SettingScene::init()
 	}
 
 	auto pEffectMenu = Menu::create(pEffectToggle, nullptr);
-	pEffectMenu->setPosition(visibleSize.width / 2 + 150, visibleSize.height / 2-50);
+	pEffectMenu->setPosition(675, visibleSize.height-444);
 	this->addChild(pEffectMenu);
 
 
 	//========================back=========================
-	auto pBack = MenuItemImage::create("icons/help_back.png", "icons/help_backSelected.png", this, menu_selector(SettingScene::menuCloseCallback));
+	auto pBack = MenuItemImage::create("icons/Back.png", "icons/BackSelected.png", this, menu_selector(SettingScene::menuCloseCallback));
 	auto pBackMenu = Menu::create(pBack, NULL);
-	pBackMenu->setPosition(40, visibleSize.height - 40);
+	pBackMenu->setPosition(64, visibleSize.height - 40);
 	addChild(pBackMenu);
 
 

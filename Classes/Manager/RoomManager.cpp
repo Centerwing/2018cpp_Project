@@ -1,4 +1,4 @@
-#include"RoomManager.h"
+/*#include"RoomManager.h"
 #include"GameScene.h"                            //////////////////////////
 
 #include "flatbuffers/flatbuffers.h"             //////////////////////////
@@ -42,4 +42,4 @@ void RoomManager::onEnter()
 	CLIENT_ON(MsgType_GameStatusChange, RoomController::onGameStatusChange);
 	CLIENT_ON(MsgType_Chat, RoomController::onChat);
 #endif // NETWORK
-}
+}*/

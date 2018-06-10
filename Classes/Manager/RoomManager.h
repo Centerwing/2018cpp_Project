@@ -1,4 +1,4 @@
-#ifndef _ROOMMANAGER_H_
+/*#ifndef _ROOMMANAGER_H_
 #define _ROOMMANAGER_H_
 
 #include"cocos2d.h"
@@ -14,7 +14,7 @@ public:
 
 	cocos2d::Vector<UserBox*> userBoxes;
 
-	void onUserChangeRole(int role);
+	void onUserChangeTeam(int team);
 
 	void onUserChangeStats(bool isReady);
 
@@ -37,3 +37,4 @@ private:
 };
 
 #endif
+*/

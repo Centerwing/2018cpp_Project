@@ -1,9 +1,10 @@
-#include"cocos2d.h"
-#include"SimpleAudioEngine.h"
+#include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 #include "ui/CocosGUI.h"
 
 #include "LoginScene.h"
 #include "StartScene.h"
+#include "Manager/User.h"
 
 USING_NS_CC;
 
@@ -31,7 +32,7 @@ bool LoginScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//==============create background=================
-	auto pLoginBg = Sprite::create("background/LoginSceneBg.jpg");
+	auto pLoginBg = Sprite::create("background/LoginSceneBg.png");
 	pLoginBg->setPosition(visibleSize / 2);
 	addChild(pLoginBg);
 
@@ -41,6 +42,11 @@ bool LoginScene::init()
 	//==============effect music on================
 	UserDefault::getInstance()->setBoolForKey("Effect", true);
 
+	//==============login button================
+	createLoginButton();
+
+	//==============input box===============
+	createInputBox();
 
 	return true;
 }
@@ -51,15 +57,15 @@ void LoginScene::createLoginButton()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
 	auto loginButton = ui::Button::create("icons/Button.png", "icons/ButtonSelected.png");
-	loginButton->setTitleText("Login");
-	loginButton->setTitleFontSize(32);
 	loginButton->setPosition(Vec2(visibleSize.width / 2, visibleSize.height * 0.35f));
 	loginButton->setOpacity(233);
 
 	loginButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
 	{
-		if (UserDefault::getInstance()->
-			getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+		if (type==ui::Widget::TouchEventType::ENDED&&
+			UserDefault::getInstance()->getBoolForKey("Effect"))
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+		
 
 		if (type != ui::Widget::TouchEventType::ENDED) return;
 		auto username = usernameInput->getString();
@@ -71,7 +77,7 @@ void LoginScene::createLoginButton()
 		{
 			username.substr(0, 16);
 			UserDefault::getInstance()->setStringForKey("username", username);                                             
-			//User::getInstance()->setName(username);           /////////////////////////////////////////////////
+			User::getInstance()->setName(username);  
 
 			Director::getInstance()->replaceScene(TransitionFade::create(1.2f, StartScene::createScene()));
 		}
@@ -86,10 +92,10 @@ void LoginScene::createInputBox()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	usernameBg = Sprite::create("icons/input_normal.png");
-	usernameBg->setScale(1.2f);
-	usernameBg->setOpacity(200);
+	usernameBg->setScale(1.4f);
+	usernameBg->setOpacity(128);
 
-	usernameInput = ui::TextField::create("Input Username Here", "fonts/Maker Felt", 24);     
+	usernameInput = ui::TextField::create("Input Username Here", "fonts/Quicksand-Bold.ttf", 28);     
 	usernameInput->setString(UserDefault::getInstance()->getStringForKey("username", ""));
 	usernameInput->setColor(Color3B::BLACK);
 	usernameInput->setCursorChar('|');
@@ -111,7 +117,8 @@ void LoginScene::createInputBox()
 
 void LoginScene::textFieldEvent(Ref* sender, ui::TextField::EventType event)
 {
-	switch (event) {
+	switch (event)
+	{
 	case ui::TextField::EventType::ATTACH_WITH_IME:
 		usernameBg->setTexture("icons/input_active.png");
 		break;

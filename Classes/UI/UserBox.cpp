@@ -4,7 +4,7 @@ USING_NS_CC;
 
 bool UserBox::init()
 {
-	this->initWithFile("roomScene/roomcase_01.png");          ////////////////////////////////////
+	this->initWithFile("roomScene/userBoxBg.png");          ////////////////////////////////////
 	return true;
 }
 
@@ -26,9 +26,9 @@ void UserBox::setTeam(int team)
 	{
 		teamPic->setVisible(true);
 		if (team == 1)
-			teamPic->setTexture("rooomScene/team1.png");              //////////////////////////
+			teamPic->setTexture("rooomScene/team1/selected.png");              //////////////////////////
 		else if (team == 2)
-			teamPic->setTexture("roomScene/team2.png");               //////////////////////////
+			teamPic->setTexture("roomScene/team2/selected.png");               //////////////////////////
 	}
 }
 
