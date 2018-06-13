@@ -63,7 +63,6 @@ bool StartScene::init()
 
 	addChild(pMenu);
 
-
 	return true;
 }
 

@@ -8,10 +8,10 @@ class TeamBox : public cocos2d::Sprite
 {
 public:
 
-	enum teamChoice
+	enum class teamChoice
 	{
-		Team1,
-		Team2
+		PROTOSS,
+		TERRAN
 	};
 
 	virtual bool init();

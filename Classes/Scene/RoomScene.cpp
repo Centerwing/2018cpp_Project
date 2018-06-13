@@ -2,7 +2,8 @@
 #include"Manager/RoomManager.h"
 #include"UI/UserBox.h"
 #include"UI/TeamBox.h"
-#include"Network/Client.h"
+#include"GameScene.h"
+#include"Element/User.h"
 
 #include"cocos2d.h"
 #include"SimpleAudioEngine.h"
@@ -70,13 +71,14 @@ void RoomScene::createUI()
 	{
 		auto teamBox = TeamBox::create(static_cast<TeamBox::teamChoice>(i-1));
 		teamBox->setPosition(Vec2(
-			visibleSize.width * 0.6f + 2 * i * teamBox->getContentSize().width,
+			visibleSize.width * 0.65f + 2 * i * teamBox->getContentSize().width,
 			visibleSize.height * 0.2f));
 		addChild(teamBox);
 		teamBoxes.pushBack(teamBox);
 	}
 	//default
 	teamBoxes.at(0)->setChosen(true);
+	User::getInstance()->_team = false;
 
 
 	//=============create listener===============
@@ -84,9 +86,9 @@ void RoomScene::createUI()
 
 
 	//=============back button=============
-	auto pBack = MenuItemImage::create("icons/help_back.png", "icons/help_backSelected.png", this, menu_selector(RoomScene::menuCloseCallback));
+	auto pBack = MenuItemImage::create("icons/Back.png", "icons/BackSelected.png", this, menu_selector(RoomScene::menuCloseCallback));
 	auto pBackMenu = Menu::create(pBack, NULL);
-	pBackMenu->setPosition(40, visibleSize.height - 40);
+	pBackMenu->setPosition(64, visibleSize.height - 40);
 	addChild(pBackMenu);
 
 	//=============ready button==============
@@ -111,7 +113,9 @@ void RoomScene::createListener()
 
 			if (range.containsPoint(point))
 			{
-				teamChangeCallback(pBox->getTeam());
+				//teamChangeCallback(pBox->getTeam());
+				//GameManager::getInstance()->_team = (pBox->getTeam() == TeamBox::teamChoice::TERRAN);
+				User::getInstance()->_team = (pBox->getTeam() == TeamBox::teamChoice::TERRAN);
 
 				for (auto val : teamBoxes)
 					val->setChosen(false);
@@ -141,18 +145,24 @@ void RoomScene::createReadyButton()
 	{
 		return isReady ? "Cancel" : "Ready";
 	};
-	readyButton = ui::Button::create("icons/Button.png", "icons/ButtonSelected.png");
+	readyButton = ui::Button::create("RoomScene/ReadyButton.png", "RoomScene/ReadyButtonSelected.png");
 	readyButton->setTitleText(getShowText(isReady));
-	readyButton->setTitleFontSize(32);
+	readyButton->setTitleFontSize(34);
 
 	readyButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
 	{
 		if (type == ui::Widget::TouchEventType::ENDED)
 		{
+			if (UserDefault::getInstance()->
+				getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
 			auto button = static_cast<ui::Button*>(sender);
 			isReady = !isReady;
 			button->setTitleText(getShowText(isReady));
 			if (readyButtonCallBack) readyButtonCallBack(isReady);
+
+			//for testing
+			Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
 		}
 	});
 
@@ -166,6 +176,5 @@ void RoomScene::menuCloseCallback(Ref* pRef)
 	if (UserDefault::getInstance()->
 		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
 
-	Client::getInstance()->close();
 	Director::getInstance()->popScene();
 }
