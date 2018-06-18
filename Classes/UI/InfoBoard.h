@@ -42,7 +42,7 @@ private:
 
 	void moneyInfoUpdate(float dt);
 
-
+	void menuAttackCall(Ref* ref);
 
 
 };

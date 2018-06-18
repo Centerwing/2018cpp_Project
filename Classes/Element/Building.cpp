@@ -104,6 +104,8 @@ void Building::initBuilding(BuildingType type)
 	default:
 		break;
 	}
+	this->_attackMode = false;
+	this->_isSelected = false;
 }
 
 
@@ -131,7 +133,7 @@ void Building::dying()
 	animation->addSpriteFrameWithFile("element/die/building/die7.png");
 	animation->addSpriteFrameWithFile("element/die/building/die8.png");
 	animation->addSpriteFrameWithFile("element/die/building/die9.png");
-	animation->addSpriteFrameWithFile("element/die/building/die10.png");
+	//animation->addSpriteFrameWithFile("element/die/building/die10.png");
 	animation->setLoops(1);
 	animation->setDelayPerUnit(0.04);
 

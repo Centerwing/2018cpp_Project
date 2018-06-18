@@ -7,6 +7,7 @@
 
 #include"cocos2d.h"
 #include"ui\UIButton.h"
+#include"SimpleAudioEngine.h"
 #include<string>
 
 USING_NS_CC;
@@ -465,15 +466,55 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 	else if (type == Unit::UnitType::WARRIOR)
 	{
-		auto attackmode= ui::Button::create(GameManager::getInstance()->_team ? "Element/t/machinery_b.jpg" : "Element/p/machinery_b.jpg");////
+		auto on = Sprite::create("element/attack/attack.png");
+		auto off = Sprite::create("element/attack/disattack.png");
+
+		auto menuOn = MenuItemSprite::create(on, on);
+		auto menuOff = MenuItemSprite::create(off, off);
+		auto toggle = MenuItemToggle::createWithCallback(CC_CALLBACK_1(InfoBoard::menuAttackCall, this), menuOff, menuOn, NULL);
+		if (GameManager::getInstance()->_selectedBox[0]->_attackMode)
+		{
+			toggle->setSelectedIndex(1);
+		}
+		else
+		{
+			toggle->setSelectedIndex(0);
+		}
+
+		auto menu = Menu::create(toggle, nullptr);
+		menu->setPosition(Vec2(770, 150));
+		_board->addChild(menu, 0);
 	}
 	else if (type == Unit::UnitType::TANK)
 	{
+		auto on = Sprite::create("element/attack/attack.png");
+		auto off = Sprite::create("element/attack/disattack.png");
 
+		auto menuOn = MenuItemSprite::create(on, on);
+		auto menuOff = MenuItemSprite::create(off, off);
+		auto toggle = MenuItemToggle::createWithCallback(CC_CALLBACK_1(InfoBoard::menuAttackCall, this), menuOff, menuOn, NULL);
+		if (GameManager::getInstance()->_selectedBox[0]->_attackMode)
+		{
+			toggle->setSelectedIndex(1);
+		}
+		else
+		{
+			toggle->setSelectedIndex(0);
+		}
+
+		auto menu = Menu::create(toggle, nullptr);
+		menu->setPosition(Vec2(770, 150));
+		_board->addChild(menu, 0);
 	}
+}
 
 
-
+void InfoBoard::menuAttackCall(Ref* ref)
+{
+	for (auto iter : GameManager::getInstance()->_selectedBox)
+	{
+		iter->_attackMode = !iter->_attackMode;
+	}
 }
 
 

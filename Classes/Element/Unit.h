@@ -34,11 +34,10 @@ public:
 		ATTACK
 	} _status;
 
-	void changeMode();
+	//void changeMode();
 
 	//bool _isEnemy;
 	//bool _isSelected;
-	bool _attackMod;
 
 	virtual void getDamage(unsigned damage);
 private:

@@ -9,6 +9,7 @@ public:
 
 	bool _isSelected;
 	bool _isEnemy;
+	bool _attackMode;
 
 	int _price;
 	int _health;

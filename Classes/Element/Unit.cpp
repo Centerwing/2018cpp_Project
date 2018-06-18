@@ -28,10 +28,10 @@ USING_NS_CC;
 	 if (type != Unit::UnitType::FAMER&&!isEnemy)
 	 {
 		 pUnit->schedule(schedule_selector(Unit::attackUpdate), 1.5);
-		 pUnit->_attackMod = true;
+		 pUnit->_attackMode = true;
 	 }
 	 else
-		 pUnit->_attackMod = false;
+		 pUnit->_attackMode = false;
 
 	 return pUnit;
 }
@@ -55,8 +55,7 @@ USING_NS_CC;
 			 if (rect.containsPoint(locationInNode))
 			 {			
 				 GameManager::getInstance()->clearSelectedBox();
-				 InfoBoard::getInstance()->changeBoard(this);
-
+				
 				 if (!this->_isEnemy) 
 				 {				 
 					 GameManager::getInstance()->_selectedBox.push_back(target);
@@ -64,6 +63,8 @@ USING_NS_CC;
 					 target->setOpacity(180);
 					 target->_isSelected = true;
 				 }
+				 
+				 InfoBoard::getInstance()->changeBoard(this);
 			 }
 			 else
 				 return;
@@ -103,6 +104,7 @@ USING_NS_CC;
 		 this->_type = UnitType::FAMER;
 		 this->_attr = { 0,0.000002f,0. };
 		 this->_health = 45;
+		 this->_attackMode = false;
 		 this->_status = Status::STAND;
 
 		 break;
@@ -112,6 +114,7 @@ USING_NS_CC;
 		 this->_type = UnitType::WARRIOR;
 		 this->_attr = { 15,0.02f,256. };//////attack=6
 		 this->_health = 45;
+		 this->_attackMode = true;
 		 this->_status = Status::STAND;
 
 		 break;
@@ -121,10 +124,13 @@ USING_NS_CC;
 		 this->_type = UnitType::TANK;
 		 this->_attr = { 500,0.025f,256. };//////attack=3
 		 this->_health = 125;
+		 this->_attackMode = true;
 		 this->_status = Status::STAND;
 
 		 break;
 	 }
+
+	 this->_isSelected = false;
  }
 
 
@@ -197,22 +203,25 @@ USING_NS_CC;
 
  void Unit::attackUpdate(float dt)
  {
-	 for (auto iter : GameManager::getInstance()->_enemyList)
+	 if (this->_attackMode)
 	 {
-		 if (this->getPosition().distance(iter->getPosition()) < this->_attr.range)
+		 for (auto iter : GameManager::getInstance()->_enemyList)
 		 {
-			 this->attack(iter->getPosition());
-			 iter->getDamage(this->_attr.attack);
-			 break;
+			 if (this->getPosition().distance(iter->getPosition()) < this->_attr.range)
+			 {
+				 this->attack(iter->getPosition());
+				 iter->getDamage(this->_attr.attack);
+				 break;
+			 }
 		 }
 	 }
  }
 
 
- void Unit::changeMode()
+ /*void Unit::changeMode()
  {
-	 this->_attackMod = this->_attackMod;
-	 if (this->_attackMod)
+	 this->_attackMode = !this->_attackMode;
+	 if (this->_attackMode)
 	 {
 		 this->schedule(schedule_selector(Unit::attackUpdate), 1.5);
 	 }
@@ -220,7 +229,7 @@ USING_NS_CC;
 	 {
 		 this->unschedule(schedule_selector(Unit::attackUpdate));
 	 }
- }
+ }*/
 
 
  /* 

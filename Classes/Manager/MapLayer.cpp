@@ -161,9 +161,15 @@ void MapLayer::createSelectListener()
 							clear = false;
 						}
 
-						if(GameManager::getInstance()->_selectedBox.empty())
-							InfoBoard::getInstance()->changeBoard(iter);
-						GameManager::getInstance()->_selectedBox.push_back(iter);
+						if (GameManager::getInstance()->_selectedBox.empty())
+						{
+							GameManager::getInstance()->_selectedBox.push_back(iter);
+							InfoBoard::getInstance()->changeBoard(iter);						
+						}
+						else
+						{
+							GameManager::getInstance()->_selectedBox.push_back(iter);
+						}
 
 						iter->setOpacity(180);
 						iter->_isSelected = true;
