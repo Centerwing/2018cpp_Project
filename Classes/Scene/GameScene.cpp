@@ -7,6 +7,7 @@
 
 #include"cocos2d.h"
 #include<windows.h>
+#include"SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -48,8 +49,10 @@ bool GameScene::init()
 	//===========create listener==========
 	//createMouseListener();
 
-	//===========create schedule==========
 	schedule(schedule_selector(GameScene::MapMoveUpdate),1.0/60);
+
+	if (CocosDenshion::SimpleAudioEngine::sharedEngine()->isBackgroundMusicPlaying())
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/ShortChangeHero.mp3", true);
 	
 	//===========test code==============
 
@@ -140,4 +143,20 @@ void GameScene::initGame()
 	auto famer = Unit::create(Unit::UnitType::FAMER);
 	famer->setPosition(Vec2(250, 250));
 	MapLayer::getInstance()->addChild(famer);
+
+	auto enemy = Unit::create(Unit::UnitType::WARRIOR,true);
+	enemy->setPosition(Vec2(750, 750));
+	MapLayer::getInstance()->addChild(enemy);
+
+	auto warrior = Unit::create(Unit::UnitType::WARRIOR);
+	warrior->setPosition(Vec2(1000, 750));
+	MapLayer::getInstance()->addChild(warrior);
+
+	auto tan = Unit::create(Unit::UnitType::TANK);
+	tan->setPosition(Vec2(1000,1000));
+	MapLayer::getInstance()->addChild(tan);
+
+	auto bui = Building::create(Building::BuildingType::BARRACK,true);
+	bui->setPosition(1250, 1250);
+	MapLayer::getInstance()->addChild(bui);
 }

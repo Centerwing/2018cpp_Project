@@ -10,9 +10,12 @@ public:
 	bool _isSelected;
 	bool _isEnemy;
 
-	unsigned _health;
-
 	int _price;
+	int _health;
+	virtual void getDamage(unsigned damage);
+
+private:
+
 };
 
 #endif // !_ELEMENT_H_

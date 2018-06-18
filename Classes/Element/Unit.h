@@ -22,9 +22,9 @@ public:
 
 	struct Attr
 	{
-		unsigned health;
 		unsigned attack;
 		float speed;
+		float range;
 	} _attr;
 
 	enum class Status:std::uint8_t
@@ -34,17 +34,28 @@ public:
 		ATTACK
 	} _status;
 
-	void getDamage(unsigned damage);
+	void changeMode();
 
 	//bool _isEnemy;
 	//bool _isSelected;
 	bool _attackMod;
+
+	virtual void getDamage(unsigned damage);
 private:
 
 	void createListener();
 	void createPhysics();
 
 	void initUnit(UnitType type);
+
+	void attackUpdate(float dt);
+	void attack(Vec2 target);
+
+	Sprite* _bullet;
+	void removeBullet();
+
+	void dying();
+	void die();
 };
 
 #endif // !_UNIT_H_

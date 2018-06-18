@@ -20,7 +20,7 @@ public:
 
 	static Building* create(BuildingType type, bool isEnemy = false);
 
-	void getDamage(unsigned damage);
+	virtual void getDamage(unsigned damage);
 
 	//bool _isSelected;
 	//bool _isEnemy;
@@ -33,6 +33,9 @@ private:
 	void createPhysics();
 
 	void initBuilding(BuildingType type);
+
+	void dying();
+	void die();
 };
 
 #endif // !_BUILDING_H_

@@ -14,8 +14,16 @@ public:
 
 	static MapLayer* getInstance();
 	void operator=(MapLayer const &) = delete;
+
+	Vec2 _touchBegin;
+	
 private:
 	void createWalls();
+
+	void createSelectListener();
+
+	Sprite* _bg;
+
 };
 
 #endif // !_MAPLAYER_H_

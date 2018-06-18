@@ -1,6 +1,7 @@
 #include"Unit.h"
 #include"Manager/GameManager.h"
 #include"UI/InfoBoard.h"
+#include"Manager/MapLayer.h"
 
 #include"cocos2d.h"
 
@@ -15,10 +16,22 @@ USING_NS_CC;
 	 pUnit->createPhysics();
 
 	 pUnit->_isSelected = false;
-	 pUnit->_attackMod = false;
 	 pUnit->_isEnemy = isEnemy;
 
 	 pUnit->autorelease();
+	 
+	 if (isEnemy)
+		 GameManager::getInstance()->_enemyList.insert(pUnit);
+	 else
+		 GameManager::getInstance()->_unitList.insert(pUnit);
+
+	 if (type != Unit::UnitType::FAMER&&!isEnemy)
+	 {
+		 pUnit->schedule(schedule_selector(Unit::attackUpdate), 1.5);
+		 pUnit->_attackMod = true;
+	 }
+	 else
+		 pUnit->_attackMod = false;
 
 	 return pUnit;
 }
@@ -40,14 +53,17 @@ USING_NS_CC;
 			 Rect rect = Rect(0, 0, s.width, s.height);
 
 			 if (rect.containsPoint(locationInNode))
-			 {
+			 {			
 				 GameManager::getInstance()->clearSelectedBox();
-				 GameManager::getInstance()->_selectedBox = target;
-
 				 InfoBoard::getInstance()->changeBoard(this);
 
-				 target->setOpacity(180);
-				 target->_isSelected = true;
+				 if (!this->_isEnemy) 
+				 {				 
+					 GameManager::getInstance()->_selectedBox.push_back(target);
+
+					 target->setOpacity(180);
+					 target->_isSelected = true;
+				 }
 			 }
 			 else
 				 return;
@@ -76,7 +92,8 @@ USING_NS_CC;
 	 this->setPhysicsBody(pBody);
  }
 
-
+ /*各单位参数可以在这里设置
+  */
  void Unit::initUnit(UnitType type)
  {
 	 switch (type)
@@ -84,26 +101,182 @@ USING_NS_CC;
 	 case UnitType::FAMER:
 		 this->initWithFile(GameManager::getInstance()->_team?"Element/t/famer.jpg":"Element/p/famer.jpg");         
 		 this->_type = UnitType::FAMER;
-		 this->_attr = { 45,0,0.000002f };
+		 this->_attr = { 0,0.000002f,0. };
+		 this->_health = 45;
 		 this->_status = Status::STAND;
-		 GameManager::getInstance()->_money -= 50;
-		 GameManager::getInstance()->_salary += 10;
+
 		 break;
 
 	 case UnitType::WARRIOR:
 		 this->initWithFile(GameManager::getInstance()->_team ? "Element/t/fighter.jpg" : "Element/p/fighter.jpg");
 		 this->_type = UnitType::WARRIOR;
-		 this->_attr = { 45,3,0.02f };
+		 this->_attr = { 15,0.02f,256. };//////attack=6
+		 this->_health = 45;
 		 this->_status = Status::STAND;
-		 GameManager::getInstance()->_money -= 75;
+
 		 break;
 
 	 case UnitType::TANK:
 		 this->initWithFile(GameManager::getInstance()->_team ? "Element/t/warrior.jpg" : "Element/p/warrior.jpg");
 		 this->_type = UnitType::TANK;
-		 this->_attr = { 125,6,0.025f };
+		 this->_attr = { 500,0.025f,256. };//////attack=3
+		 this->_health = 125;
 		 this->_status = Status::STAND;
-		 GameManager::getInstance()->_money -= 125;
+
 		 break;
+	 }
+ }
+
+
+ void Unit::attack(Vec2 target)
+ {
+	 float distance = this->getPosition().distance(target);
+	 
+	 if (this->_type == Unit::UnitType::WARRIOR)
+	 {
+		 _bullet = Sprite::create("element/bullet/fighter/bullet1.png");
+		 _bullet->setPosition(this->getPosition());
+		 MapLayer::getInstance()->addChild(_bullet, 2);
+
+		 auto move = MoveTo::create(distance*0.001, target);
+		 auto animation = Animation::create();
+		 animation->addSpriteFrameWithFile("element/bullet/fighter/bullet2.png");
+		 animation->addSpriteFrameWithFile("element/bullet/fighter/bullet3.png");
+		 animation->addSpriteFrameWithFile("element/bullet/fighter/bullet4.png");
+		 animation->addSpriteFrameWithFile("element/bullet/fighter/bullet5.png");
+		 animation->addSpriteFrameWithFile("element/bullet/fighter/bullet6.png");
+		 animation->setLoops(1);
+		 animation->setDelayPerUnit(0.07);
+
+		 auto animate = Animate::create(animation);
+
+		 auto remove = CallFunc::create(CC_CALLBACK_0(Unit::removeBullet, this));
+
+		 auto sequence = Sequence::create(move, animate, remove, NULL);
+
+		 _bullet->runAction(sequence);
+	 }
+	 else if (this->_type == Unit::UnitType::TANK)
+	 {
+		 _bullet = Sprite::create("element/bullet/warrior/bullet1.png");
+		 _bullet->setPosition(this->getPosition());
+		 MapLayer::getInstance()->addChild(_bullet, 2);
+
+		 auto move = MoveTo::create(distance*0.001, target);
+		 auto animation = Animation::create();
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet2.png");
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet3.png");
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet4.png");
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet5.png");
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet6.png");
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet7.png");
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet8.png");
+		 animation->addSpriteFrameWithFile("element/bullet/warrior/bullet9.png");
+		 animation->setLoops(1);
+		 animation->setDelayPerUnit(0.04);
+
+		 auto animate = Animate::create(animation);
+
+		 auto remove = CallFunc::create(CC_CALLBACK_0(Unit::removeBullet, this));
+
+		 auto sequence = Sequence::create(move, animate, remove, NULL);
+
+		 _bullet->runAction(sequence);
+	 }
+ }
+
+
+ void Unit::removeBullet()
+ {
+	 _bullet->stopAllActions();
+	 MapLayer::getInstance()->removeChild(_bullet);
+	 _bullet->release();
+	 _bullet = nullptr;
+ }
+
+
+ void Unit::attackUpdate(float dt)
+ {
+	 for (auto iter : GameManager::getInstance()->_enemyList)
+	 {
+		 if (this->getPosition().distance(iter->getPosition()) < this->_attr.range)
+		 {
+			 this->attack(iter->getPosition());
+			 iter->getDamage(this->_attr.attack);
+			 break;
+		 }
+	 }
+ }
+
+
+ void Unit::changeMode()
+ {
+	 this->_attackMod = this->_attackMod;
+	 if (this->_attackMod)
+	 {
+		 this->schedule(schedule_selector(Unit::attackUpdate), 1.5);
+	 }
+	 else
+	 {
+		 this->unschedule(schedule_selector(Unit::attackUpdate));
+	 }
+ }
+
+
+ /* 
+  * 在单位死亡后从_unitList删除
+  */
+ void Unit::die()
+ {
+	 MapLayer::getInstance()->removeChild(this);
+	 if (this->_isEnemy)
+	 {
+		 GameManager::getInstance()->_enemyList.erase(this);
+	 }
+	 else
+	 {
+		 GameManager::getInstance()->_unitList.erase(this);
+	 }
+	 this->release();
+ }
+
+
+ void Unit::dying()
+ {
+	 auto animation = Animation::create();
+	 animation->addSpriteFrameWithFile("element/die/unit/die1.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die2.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die3.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die4.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die5.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die6.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die7.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die8.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die9.png");
+	 animation->addSpriteFrameWithFile("element/die/unit/die10.png");
+	 animation->setLoops(1);
+	 animation->setDelayPerUnit(0.04);
+
+	 auto animate = Animate::create(animation);
+
+	 auto todie = CallFunc::create(CC_CALLBACK_0(Unit::die, this));
+
+	 auto sequence = Sequence::create(animate,todie, NULL);
+
+	 this->runAction(sequence);
+ }
+
+
+ void Unit::getDamage(unsigned damage)
+ {
+	 this->_health -= damage;
+	 if (this->_health < 0)
+	 {
+		 //死亡之后延迟播放动画，与被击中同步
+		 auto delay = DelayTime::create(0.4);
+		 auto dy = CallFunc::create(CC_CALLBACK_0(Unit::dying, this));
+		 auto sequence = Sequence::create(delay, dy, NULL);
+
+		 this->runAction(sequence);
 	 }
  }

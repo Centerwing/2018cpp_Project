@@ -2,6 +2,7 @@
 #include"Manager/GameManager.h"
 #include"Scene/GameScene.h"
 #include"UI/InfoBoard.h"
+#include"Manager/MapLayer.h"
 
 #include"cocos2d.h"
 
@@ -19,6 +20,9 @@ Building* Building::create(BuildingType type,bool isEnemy)
 	pBuilding->_isEnemy = isEnemy;
 
 	pBuilding->autorelease();
+
+	if (isEnemy)
+		GameManager::getInstance()->_enemyList.insert(pBuilding);
 
 	return pBuilding;
 }
@@ -41,7 +45,7 @@ void Building::createListener()
 			if (rect.containsPoint(locationInNode))
 			{
 				GameManager::getInstance()->clearSelectedBox();
-				GameManager::getInstance()->_selectedBox = target;
+				GameManager::getInstance()->_selectedBox.push_back(target);
 
 				InfoBoard::getInstance()->changeBoard(this);
 
@@ -68,7 +72,7 @@ void Building::createPhysics()
 	this->setPhysicsBody(pBody);
 }
 
-/* 建造每个单位的价钱将在这个函数里扣除
+/* 各单位参数可以在这里设置
  */
 void Building::initBuilding(BuildingType type) 
 {
@@ -83,24 +87,74 @@ void Building::initBuilding(BuildingType type)
 		this->initWithFile(GameManager::getInstance()->_team ? "Element/t/barrack.png" : "Element/p/barrack.png");
 		this->_type = BuildingType::BARRACK;
 		this->_health = 1000;
-		GameManager::getInstance()->_money -= 150;
-		GameManager::getInstance()->_electric -= 10;
+
 		break;
 	case BuildingType::CRYSTAL:
 		this->initWithFile(GameManager::getInstance()->_team ? "Element/t/crystal.png" : "Element/p/crystal.png");
 		this->_type = BuildingType::CRYSTAL;
 		this->_health = 400;
-		GameManager::getInstance()->_money -= 100;
-		GameManager::getInstance()->_electric += 5;
+
 		break;
 	case BuildingType::MACHINERY:
 		this->initWithFile(GameManager::getInstance()->_team ? "Element/t/machinery.png" : "Element/p/machinery.png");
 		this->_type = BuildingType::MACHINERY;
 		this->_health = 1250;
-		GameManager::getInstance()->_money -= 200;
-		GameManager::getInstance()->_electric -= 10;
+
 		break;
 	default:
 		break;
+	}
+}
+
+
+void Building::die()
+{
+	MapLayer::getInstance()->removeChild(this);
+	if (this->_isEnemy)
+	{
+		GameManager::getInstance()->_enemyList.erase(this);
+	}
+
+	this->release();
+}
+
+
+void Building::dying()
+{
+	auto animation = Animation::create();
+	animation->addSpriteFrameWithFile("element/die/building/die1.png");
+	animation->addSpriteFrameWithFile("element/die/building/die2.png");
+	animation->addSpriteFrameWithFile("element/die/building/die3.png");
+	animation->addSpriteFrameWithFile("element/die/building/die4.png");
+	animation->addSpriteFrameWithFile("element/die/building/die5.png");
+	animation->addSpriteFrameWithFile("element/die/building/die6.png");
+	animation->addSpriteFrameWithFile("element/die/building/die7.png");
+	animation->addSpriteFrameWithFile("element/die/building/die8.png");
+	animation->addSpriteFrameWithFile("element/die/building/die9.png");
+	animation->addSpriteFrameWithFile("element/die/building/die10.png");
+	animation->setLoops(1);
+	animation->setDelayPerUnit(0.04);
+
+	auto animate = Animate::create(animation);
+
+	auto todie = CallFunc::create(CC_CALLBACK_0(Building::die, this));
+
+	auto sequence = Sequence::create(animate, todie, NULL);
+
+	this->runAction(sequence);
+}
+
+
+void Building::getDamage(unsigned damage)
+{
+	this->_health -= damage;
+	if (this->_health < 0)
+	{
+		//死亡之后延迟播放动画，与被击中同步
+		auto delay = DelayTime::create(0.4);
+		auto dy = CallFunc::create(CC_CALLBACK_0(Building::dying, this));
+		auto sequence = Sequence::create(delay, dy, NULL);
+
+		this->runAction(sequence);
 	}
 }

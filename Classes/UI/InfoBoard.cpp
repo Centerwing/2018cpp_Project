@@ -54,7 +54,9 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				if (GameManager::getInstance()->_money >= 50)
 				{
 					auto unit = Unit::create(Unit::UnitType::FAMER);
-					unit->setPosition(GameManager::getInstance()->_selectedBox->getPosition());
+					unit->setPosition(GameManager::getInstance()->_selectedBox[0]->getPosition());
+					GameManager::getInstance()->_money -= 50;
+					GameManager::getInstance()->_salary += 10;
 
 					MapLayer::getInstance()->addChild(unit);
 				}	
@@ -88,7 +90,8 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				if (GameManager::getInstance()->_money >= 50)
 				{
 					auto unit = Unit::create(Unit::UnitType::WARRIOR);
-					unit->setPosition(GameManager::getInstance()->_selectedBox->getPosition());
+					unit->setPosition(GameManager::getInstance()->_selectedBox[0]->getPosition());
+					GameManager::getInstance()->_money -= 75;
 
 					MapLayer::getInstance()->addChild(unit);
 				}
@@ -127,7 +130,8 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				if (GameManager::getInstance()->_money >= 50)
 				{
 					auto unit = Unit::create(Unit::UnitType::TANK);
-					unit->setPosition(GameManager::getInstance()->_selectedBox->getPosition());
+					unit->setPosition(GameManager::getInstance()->_selectedBox[0]->getPosition());
+					GameManager::getInstance()->_money -= 125;
 
 					MapLayer::getInstance()->addChild(unit);
 				}
@@ -177,7 +181,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 					icon->setPosition(event->getCursorX(),
 						event->getCursorY());
 
-					if ((GameManager::getInstance()->_selectedBox->convertToNodeSpace(Vec2(event->getCursorX(),
+					if ((GameManager::getInstance()->_selectedBox[0]->convertToNodeSpace(Vec2(event->getCursorX(),
 						event->getCursorY()))).length() < 250.0)
 					{
 						icon->setColor(Color3B::GREEN);
@@ -199,14 +203,18 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 					{
 						auto loca = MapLayer::getInstance()->convertToNodeSpace(event->getLocationInView());
 
-						if (loca.distance(GameManager::getInstance()->_selectedBox->getPosition()) < 250 && GameManager::getInstance()->_money >= 150 && GameManager::getInstance()->_electric >= 10)
+						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 150 && GameManager::getInstance()->_electric >= 10)
 						{
 
 							auto build = Building::create(Building::BuildingType::BARRACK);
 							build->setPosition(loca);
+
 							MapLayer::getInstance()->addChild(build);
+							GameManager::getInstance()->_money -= 150;
+							GameManager::getInstance()->_electric -= 10;
 
 							GameManager::getInstance()->getEventDispatcher()->removeEventListener(pListener);
+							//È¥³ýÍ¼±ê¸úËæ
 							this->removeChildByTag(1);
 						}
 
@@ -229,7 +237,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 							this->addChild(alert, 1, 12);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertE), 3.0);
 						}
-						else if (loca.distance(GameManager::getInstance()->_selectedBox->getPosition()) >= 250)
+						else if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) >= 250)
 						{
 							/*ÌáÊ¾¾àÀëÌ«Ô¶
 							 */
@@ -278,7 +286,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 					icon->setPosition(event->getCursorX(),
 						event->getCursorY());
 
-					if ((GameManager::getInstance()->_selectedBox->convertToNodeSpace(Vec2(event->getCursorX(),
+					if ((GameManager::getInstance()->_selectedBox[0]->convertToNodeSpace(Vec2(event->getCursorX(),
 						event->getCursorY()))).length() < 250.0)
 					{
 						icon->setColor(Color3B::GREEN);
@@ -300,12 +308,14 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 					{
 						auto loca = MapLayer::getInstance()->convertToNodeSpace(event->getLocationInView());
 
-						if (loca.distance(GameManager::getInstance()->_selectedBox->getPosition()) < 250 && GameManager::getInstance()->_money >= 100)
+						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 100)
 						{
 
 							auto build = Building::create(Building::BuildingType::CRYSTAL);
 							build->setPosition(loca);
 							MapLayer::getInstance()->addChild(build);
+							GameManager::getInstance()->_money -= 100;
+							GameManager::getInstance()->_electric += 5;
 
 							GameManager::getInstance()->getEventDispatcher()->removeEventListener(pListener);
 							this->removeChildByTag(1);
@@ -320,7 +330,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 							this->addChild(alert, 1, 11);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
 						}
-						else if (loca.distance(GameManager::getInstance()->_selectedBox->getPosition()) >= 250)
+						else if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) >= 250)
 						{
 							/*ÌáÊ¾¾àÀëÌ«Ô¶
 							*/
@@ -370,7 +380,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 					icon->setPosition(event->getCursorX(),
 						event->getCursorY());
 
-					if ((GameManager::getInstance()->_selectedBox->convertToNodeSpace(Vec2(event->getCursorX(),
+					if ((GameManager::getInstance()->_selectedBox[0]->convertToNodeSpace(Vec2(event->getCursorX(),
 						event->getCursorY()))).length() < 250.0)
 					{
 						icon->setColor(Color3B::GREEN);
@@ -392,12 +402,14 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 					{
 						auto loca = MapLayer::getInstance()->convertToNodeSpace(event->getLocationInView());
 
-						if (loca.distance(GameManager::getInstance()->_selectedBox->getPosition()) < 250 && GameManager::getInstance()->_money >= 200 && GameManager::getInstance()->_electric >= 10)
+						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 200 && GameManager::getInstance()->_electric >= 10)
 						{
 
 							auto build = Building::create(Building::BuildingType::MACHINERY);
 							build->setPosition(loca);
 							MapLayer::getInstance()->addChild(build);
+							GameManager::getInstance()->_money -= 200;
+							GameManager::getInstance()->_electric -= 10;
 
 							GameManager::getInstance()->getEventDispatcher()->removeEventListener(pListener);
 							this->removeChildByTag(1);
@@ -422,7 +434,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 							this->addChild(alert, 1, 12);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertE), 3.0);
 						}
-						else if (loca.distance(GameManager::getInstance()->_selectedBox->getPosition()) >= 250)
+						else if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) >= 250)
 						{
 							/*ÌáÊ¾¾àÀëÌ«Ô¶
 							*/
@@ -453,7 +465,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 	else if (type == Unit::UnitType::WARRIOR)
 	{
-
+		auto attackmode= ui::Button::create(GameManager::getInstance()->_team ? "Element/t/machinery_b.jpg" : "Element/p/machinery_b.jpg");////
 	}
 	else if (type == Unit::UnitType::TANK)
 	{
@@ -536,7 +548,7 @@ void InfoBoard::showInfo(Unit* unit)
 {
 	if (unit->_type == Unit::UnitType::FAMER)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(unit->_attr.health) + "/45", "fonts/arial.ttf", 36);
+		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/45", "fonts/arial.ttf", 36);
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Famer", "fonts/arial.ttf", 40);
@@ -545,7 +557,7 @@ void InfoBoard::showInfo(Unit* unit)
 	}
 	else if (unit->_type == Unit::UnitType::WARRIOR)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(unit->_attr.health) + "/45", "fonts/arial.ttf", 36);
+		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/45", "fonts/arial.ttf", 36);
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Fighter", "fonts/arial.ttf", 40);
@@ -554,7 +566,7 @@ void InfoBoard::showInfo(Unit* unit)
 	}
 	else if (unit->_type == Unit::UnitType::TANK)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(unit->_attr.health) + "/125", "fonts/arial.ttf", 36);
+		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/125", "fonts/arial.ttf", 36);
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Warrior", "fonts/arial.ttf", 40);
