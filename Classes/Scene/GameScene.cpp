@@ -52,7 +52,11 @@ bool GameScene::init()
 	schedule(schedule_selector(GameScene::MapMoveUpdate),1.0/60);
 
 	if (CocosDenshion::SimpleAudioEngine::sharedEngine()->isBackgroundMusicPlaying())
+	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/ShortChangeHero.mp3", true);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(0.4);
+	}
+
 	
 	//===========test code==============
 
@@ -109,6 +113,7 @@ void GameScene::MapMoveUpdate(float dt)
 void GameScene::createMap()
 {
 	this->_map = MapLayer::getInstance();
+	_map->setPosition(0, -2430);
 
 	addChild(_map, 1);
 }
@@ -137,26 +142,26 @@ void GameScene::initGame()
 	GameManager::getInstance()->_electric = ORIGIN_ELECTRIC;
 
 	auto base = Building::create(Building::BuildingType::BASE);
-	base->setPosition(Vec2(500, 500));
+	base->setPosition(Vec2(430, 2950));
 	MapLayer::getInstance()->addChild(base);
 
 	auto famer = Unit::create(Unit::UnitType::FAMER);
-	famer->setPosition(Vec2(250, 250));
+	famer->setPosition(Vec2(250, 2700));
 	MapLayer::getInstance()->addChild(famer);
 
 	auto enemy = Unit::create(Unit::UnitType::WARRIOR,true);
-	enemy->setPosition(Vec2(750, 750));
+	enemy->setPosition(Vec2(250, 2500));
 	MapLayer::getInstance()->addChild(enemy);
 
 	auto warrior = Unit::create(Unit::UnitType::WARRIOR);
-	warrior->setPosition(Vec2(1000, 750));
+	warrior->setPosition(Vec2(280, 2300));
 	MapLayer::getInstance()->addChild(warrior);
 
 	auto tan = Unit::create(Unit::UnitType::TANK);
-	tan->setPosition(Vec2(1000,1000));
+	tan->setPosition(Vec2(1000,2700));
 	MapLayer::getInstance()->addChild(tan);
 
 	auto bui = Building::create(Building::BuildingType::BARRACK,true);
-	bui->setPosition(1250, 1250);
+	bui->setPosition(1250, 2300);
 	MapLayer::getInstance()->addChild(bui);
 }

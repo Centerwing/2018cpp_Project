@@ -38,7 +38,9 @@ bool LoginScene::init()
 
 	//==============play bgm===============
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/Torchlight.mp3", true);
-	//CocosDenshion::SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(0.0);
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(0.5);
+	//CocosDenshion::SimpleAudioEngine::sharedEngine()->setEffectsVolume(0.0);
+	
 
 	//==============effect music on================
 	UserDefault::getInstance()->setBoolForKey("Effect", true);

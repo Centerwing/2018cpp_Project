@@ -49,7 +49,7 @@ void Building::createListener()
 
 				InfoBoard::getInstance()->changeBoard(this);
 
-				target->setOpacity(200);
+				target->setOpacity(180);
 				target->_isSelected = true;
 			}
 			else
@@ -129,11 +129,8 @@ void Building::dying()
 	animation->addSpriteFrameWithFile("element/die/building/die3.png");
 	animation->addSpriteFrameWithFile("element/die/building/die4.png");
 	animation->addSpriteFrameWithFile("element/die/building/die5.png");
-	animation->addSpriteFrameWithFile("element/die/building/die6.png");
-	animation->addSpriteFrameWithFile("element/die/building/die7.png");
-	animation->addSpriteFrameWithFile("element/die/building/die8.png");
-	animation->addSpriteFrameWithFile("element/die/building/die9.png");
-	//animation->addSpriteFrameWithFile("element/die/building/die10.png");
+    animation->addSpriteFrameWithFile("element/die/building/die6.png");
+	animation->addSpriteFrameWithFile("element/die/building/die7.png");////////////////////
 	animation->setLoops(1);
 	animation->setDelayPerUnit(0.04);
 
@@ -143,6 +140,8 @@ void Building::dying()
 
 	auto sequence = Sequence::create(animate, todie, NULL);
 
+	//如果不先去除PhysicsBody 会有点小bug
+	this->getPhysicsBody()->removeFromWorld();
 	this->runAction(sequence);
 }
 

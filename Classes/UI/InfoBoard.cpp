@@ -41,7 +41,6 @@ InfoBoard* InfoBoard::getInstance()
 
 void InfoBoard::createBuildingButton(Building::BuildingType type)
 {	
-
 	if (type == Building::BuildingType::BASE)
 	{
 		auto famer = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/famer.jpg" : "Element/p/famer.jpg");
@@ -50,6 +49,9 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
 			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
 				auto button = static_cast<ui::Button*>(pRef);
 			
 				if (GameManager::getInstance()->_money >= 50)
@@ -86,6 +88,9 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
 			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
 				auto button = static_cast<ui::Button*>(pRef);
 
 				if (GameManager::getInstance()->_money >= 50)
@@ -126,6 +131,9 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
 			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
 				auto button = static_cast<ui::Button*>(pRef);
 
 				if (GameManager::getInstance()->_money >= 50)
@@ -169,6 +177,9 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
 			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
 				auto button = static_cast<ui::Button*>(pRef);
 
 				/*创建图标跟随指针
@@ -206,6 +217,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 150 && GameManager::getInstance()->_electric >= 10)
 						{
+							if (UserDefault::getInstance()->
+								getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
 
 							auto build = Building::create(Building::BuildingType::BARRACK);
 							build->setPosition(loca);
@@ -242,7 +255,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 						{
 							/*提示距离太远
 							 */
-							auto alert = Label::create("It's to far!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("It's too far!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 286);
 							this->addChild(alert, 1, 13);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertF), 3.0);
@@ -274,6 +287,9 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
 			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
 				auto button = static_cast<ui::Button*>(pRef);
 
 				/*创建图标跟随指针
@@ -311,6 +327,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 100)
 						{
+							if (UserDefault::getInstance()->
+								getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
 
 							auto build = Building::create(Building::BuildingType::CRYSTAL);
 							build->setPosition(loca);
@@ -335,7 +353,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 						{
 							/*提示距离太远
 							*/
-							auto alert = Label::create("It's to far!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("It's too far!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 286);
 							this->addChild(alert, 1, 13);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertF), 3.0);
@@ -368,6 +386,9 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
 			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
 				auto button = static_cast<ui::Button*>(pRef);
 
 				/*创建图标跟随指针
@@ -405,6 +426,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 200 && GameManager::getInstance()->_electric >= 10)
 						{
+							if (UserDefault::getInstance()->
+								getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
 
 							auto build = Building::create(Building::BuildingType::MACHINERY);
 							build->setPosition(loca);
@@ -439,7 +462,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 						{
 							/*提示距离太远
 							*/
-							auto alert = Label::create("It's to far!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("It's too far!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 286);
 							this->addChild(alert, 1, 13);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertF), 3.0);
@@ -511,6 +534,9 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 void InfoBoard::menuAttackCall(Ref* ref)
 {
+	if (UserDefault::getInstance()->
+		getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
 	for (auto iter : GameManager::getInstance()->_selectedBox)
 	{
 		iter->_attackMode = !iter->_attackMode;
@@ -550,6 +576,7 @@ void InfoBoard::showInfo(Building* build)
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Base", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
@@ -559,6 +586,7 @@ void InfoBoard::showInfo(Building* build)
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Barrack", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
@@ -568,6 +596,7 @@ void InfoBoard::showInfo(Building* build)
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Crystal", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
@@ -577,11 +606,12 @@ void InfoBoard::showInfo(Building* build)
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Machinery", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
 
-	// 实时显示血量
+	// 无法实时显示血量
 }
 
 
@@ -593,6 +623,7 @@ void InfoBoard::showInfo(Unit* unit)
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Famer", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(unit->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
@@ -602,6 +633,7 @@ void InfoBoard::showInfo(Unit* unit)
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Fighter", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(unit->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
@@ -611,11 +643,12 @@ void InfoBoard::showInfo(Unit* unit)
 		pLabel->setPosition(512, 100);
 		_board->addChild(pLabel, 1);
 		auto pTitle = Label::create("Warrior", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(unit->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
 
-	// 实时显示血量
+	// 无法实时显示血量
 }
 
 

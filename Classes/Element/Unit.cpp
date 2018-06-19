@@ -4,6 +4,7 @@
 #include"Manager/MapLayer.h"
 
 #include"cocos2d.h"
+#include"SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -60,7 +61,7 @@ USING_NS_CC;
 				 {				 
 					 GameManager::getInstance()->_selectedBox.push_back(target);
 
-					 target->setOpacity(180);
+					 target->setOpacity(150);
 					 target->_isSelected = true;
 				 }
 				 
@@ -209,6 +210,10 @@ USING_NS_CC;
 		 {
 			 if (this->getPosition().distance(iter->getPosition()) < this->_attr.range)
 			 {
+				 if (UserDefault::getInstance()->
+					 getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/electric.mp3");
+				 //¹¥»÷Í£¶Ù
+				 this->stopAllActions();
 				 this->attack(iter->getPosition());
 				 iter->getDamage(this->_attr.attack);
 				 break;
