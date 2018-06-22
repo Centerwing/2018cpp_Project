@@ -21,7 +21,7 @@ private:
 	cocos2d::Vec2 origin;
 	cocos2d::Size visibleSize;
 
-	//RoomManager* _roomManager;
+	RoomManager* _roomManager;
 
 	cocos2d::ui::Button * readyButton;
 	cocos2d::Vector<TeamBox*> teamBoxes;
@@ -29,7 +29,7 @@ private:
 	bool isReady;
 
 	std::function<void(bool)> readyButtonCallBack;
-	std::function<void(int)> teamChangeCallback;
+	std::function<void(bool)> teamChangeCallback;
 
 	void menuCloseCallback(cocos2d::Ref* pRef);
 

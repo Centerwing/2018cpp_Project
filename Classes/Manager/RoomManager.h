@@ -1,7 +1,8 @@
-/*#ifndef _ROOMMANAGER_H_
+#ifndef _ROOMMANAGER_H_
 #define _ROOMMANAGER_H_
 
 #include"cocos2d.h"
+#include<vector>
 
 #include"Network/Client.h"
 #include"UI/UserBox.h"
@@ -12,11 +13,15 @@ public:
 	virtual bool init();
 	CREATE_FUNC(RoomManager);
 
-	cocos2d::Vector<UserBox*> userBoxes;
+	std::vector<UserBox*> userBoxes;
 
-	void onUserChangeTeam(int team);
+	void ChangeTeam(bool team);
 
-	void onUserChangeStats(bool isReady);
+	void ChangeStats(bool ready);
+	
+	void sendChat(const std::string & text);
+
+	int _roomNumber;
 
 	//void sendChat(const std::string& text);
 
@@ -29,12 +34,13 @@ private:
 
 	void onWelcome(const void* msg);
 
-	void onRoomInfoUpdate(const void* msg);
+	void onJoin(const void* msg);
 
-	void onGameStatusChange(const void* msg);
+	void onChangeTeam(const void* msg);
+
+	void onChangeStatus(const void* msg);
 
 	void onChat(const void* msg);
 };
 
 #endif
-*/

@@ -10,14 +10,14 @@ public:
 	virtual bool init();
 	CREATE_FUNC(UserBox);
 
-	void setTeam(int team);
+	void setTeam(bool team);
 
 	void setUserName(const std::string& name);
 
 	void setReadyLabel(bool ready);
 
 private:
-	int _team;
+	bool _team;
 	cocos2d::Sprite* teamPic = nullptr;
 	cocos2d::Label* readyLabel = nullptr;
 

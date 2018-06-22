@@ -12,7 +12,6 @@ bool GameManager::init()
 		return false;
 	}
 
-	//_selectedBox = nullptr;
 	_team = User::getInstance()->_team;
 
 	schedule(schedule_selector(GameManager::salaryUpdate), 5.0f);
@@ -31,14 +30,6 @@ GameManager* GameManager::getInstance()
 
 void GameManager::clearSelectedBox()
 {
-
-	/*if (_selectedBox != nullptr)
-	{
-		_selectedBox->_isSelected = false;
-		_selectedBox->setOpacity(255);
-	}
-
-	_selectedBox = nullptr;*/
 	for (auto iter : _selectedBox)
 	{
 		iter->_isSelected = false;

@@ -3,8 +3,9 @@
 
 #include "cocos2d.h"
 #include "network/WebSocket.h"
-
 #include <unordered_map>
+
+#include "MyGame_generated.h"
 
 #define NETWORK
 #define CLIENT_ON(__code__, __func__) client->bind(__code__, CC_CALLBACK_1(__func__, this));

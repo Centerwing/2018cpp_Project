@@ -4,6 +4,7 @@
 #include"UI/TeamBox.h"
 #include"GameScene.h"
 #include"Element/User.h"
+#include"UI/ChatBox.h"
 
 #include"cocos2d.h"
 #include"SimpleAudioEngine.h"
@@ -33,21 +34,27 @@ bool RoomScene::init()
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
 
-	//_roomManager = RoomManager::create();
-	//addChild(_roomManager, 1);
+	_roomManager = RoomManager::create();
+	addChild(_roomManager, -1);
 
-	//readyButtonCallBack = CC_CALLBACK_1(RoomManager::onUserChangeStats, _roomManager);
-	//teamChangeCallback = CC_CALLBACK_1(RoomManager::onUserChangeTeam, _roomManager);
+	readyButtonCallBack = CC_CALLBACK_1(RoomManager::ChangeStats, _roomManager);
+	teamChangeCallback = CC_CALLBACK_1(RoomManager::ChangeTeam, _roomManager);
 
-	//addChild(_roomManager, -1);
 	
 	//==========create background=========
-	auto pRoomBg = Sprite::create("background/RoomSceneBg.png");
+	auto pRoomBg = Sprite::create("background/RoomSceneBg.jpg");
 	pRoomBg->setPosition(visibleSize/2);
 	addChild(pRoomBg);
 
 	createUI();
-	//auto chatBox = ChatBox::create();
+
+	auto chatBox = ChatBox::create();
+	chatBox->sendText = CC_CALLBACK_1(RoomManager::sendChat, _roomManager);
+	chatBox->setPosition(visibleSize.width * 0.08f, visibleSize.height * 0.15f);
+	addChild(chatBox);
+
+	isReady = false;
+	User::getInstance()->_ready = false;
 
 	return true;
 }
@@ -62,9 +69,14 @@ void RoomScene::createUI()
 		_userBox->setPosition(visibleSize.width/3*i,visibleSize.height*0.61f);
 		addChild(_userBox);
 
-		//roomManager->userBoxes.pushBack(_userBox);
+		_roomManager->userBoxes.push_back(_userBox);
 	}
+	//default
+	_roomManager->userBoxes[0]->setUserName(User::getInstance()->getName());
+	_roomManager->userBoxes[0]->setTeam(true);
+	_roomManager->userBoxes[0]->setReadyLabel(false);
 
+	_roomManager->userBoxes[1]->setReadyLabel(false);
 
 	//=============create teambox===============
 	for (int i = 1; i < 3; ++i)
@@ -72,16 +84,15 @@ void RoomScene::createUI()
 		auto teamBox = TeamBox::create(static_cast<TeamBox::teamChoice>(i-1));
 		teamBox->setPosition(Vec2(
 			visibleSize.width * 0.65f + 2 * i * teamBox->getContentSize().width,
-			visibleSize.height * 0.2f));
+			visibleSize.height * 0.11f));
 		addChild(teamBox);
 		teamBoxes.pushBack(teamBox);
 	}
 	//default
-	teamBoxes.at(0)->setChosen(true);
-	User::getInstance()->_team = false;
+	teamBoxes.at(1)->setChosen(true);
+	User::getInstance()->_team = true;
 
 
-	//=============create listener===============
 	createListener();
 
 
@@ -93,7 +104,6 @@ void RoomScene::createUI()
 
 	//=============ready button==============
 	createReadyButton();
-
 }
 
 
@@ -113,9 +123,12 @@ void RoomScene::createListener()
 
 			if (range.containsPoint(point))
 			{
-				//teamChangeCallback(pBox->getTeam());
-				//GameManager::getInstance()->_team = (pBox->getTeam() == TeamBox::teamChoice::TERRAN);
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
+				//GameManager::getInstance()->_team = (pBox->getTeam() == TeamBox::teamChoice::TERRAN);//这里不能用GameManager
 				User::getInstance()->_team = (pBox->getTeam() == TeamBox::teamChoice::TERRAN);
+				teamChangeCallback(static_cast<bool>(pBox->getTeam()));
 
 				for (auto val : teamBoxes)
 					val->setChosen(false);
@@ -158,11 +171,12 @@ void RoomScene::createReadyButton()
 
 			auto button = static_cast<ui::Button*>(sender);
 			isReady = !isReady;
+			User::getInstance()->_ready = isReady;
 			button->setTitleText(getShowText(isReady));
 			if (readyButtonCallBack) readyButtonCallBack(isReady);
 
-			//for testing
-			Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
+			//just for testing!!!!!!!!!
+			//Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
 		}
 	});
 
