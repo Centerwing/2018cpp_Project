@@ -32,9 +32,8 @@ private:
 	void createListener();
 	void createPhysics();
 
-	void initBuilding(BuildingType type);
+	void initBuilding(BuildingType type,bool isEnemy);
 
-	void dying();
 	void die();
 };
 

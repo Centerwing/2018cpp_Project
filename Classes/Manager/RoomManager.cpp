@@ -53,12 +53,14 @@ void RoomManager::onEnter()
 	CLIENT_ON(MsgType_ChangeStatus, RoomManager::onChangeStatus);
 	CLIENT_ON(MsgType_ChangeTeam, RoomManager::onChangeTeam);
 	CLIENT_ON(MsgType_Chat, RoomManager::onChat);
+	//CLIENT_ON(MsgType_GameStart, RoomManager::onGameStart);
 #endif // NETWORK
 }
 
 
 void RoomManager::onExit()
 {
+	/*
 #ifdef NETWORK
 	if (gameStatus == 0) // player exit room directly
 	{
@@ -67,6 +69,7 @@ void RoomManager::onExit()
 	client->clear();
 	client = nullptr;
 #endif // NETWORK
+*/
 	Layer::onExit();
 }
 
@@ -101,6 +104,14 @@ void RoomManager::ChangeStats(bool ready)
 	auto orc = msg.Finish();
 	builder.Finish(orc);
 	client->send(builder.GetBufferPointer(), builder.GetSize());
+
+	//判断是否房间内的玩家都在准备状态
+	if (ready&&userBoxes[1 - _roomNumber]->isUserReady())
+	{
+		//游戏开始
+		User::getInstance()->_roomNumber = _roomNumber;
+		Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
+	}
 }
 
 
@@ -161,6 +172,14 @@ void RoomManager::onChangeStatus(const void* msg)
 	auto data = static_cast<const MyGame::ChangeStatus*>(msg);
 
 	userBoxes[1 - _roomNumber]->setReadyLabel(data->ready());
+
+	//判断是否房间内的玩家都在准备状态
+	if (User::getInstance()->_ready&&data->ready())
+	{
+		//游戏开始
+		User::getInstance()->_roomNumber = _roomNumber;
+		Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
+	}
 }
 
 
@@ -185,3 +204,4 @@ void RoomManager::sendChat(const std::string & text)
 	getParent()->getEventDispatcher()->dispatchCustomEvent("update_chat",const_cast<char *>( text.c_str()));
 	client->send(builder.GetBufferPointer(), builder.GetSize());
 }
+

@@ -4,6 +4,7 @@
 #include"Manager/GameManager.h"
 #include"UI/InfoBoard.h"
 #include"Manager/MapLayer.h"
+#include"Element/User.h"
 
 #include"cocos2d.h"
 #include<windows.h>
@@ -46,9 +47,6 @@ bool GameScene::init()
 
 	initGame();
 
-	//===========create listener==========
-	//createMouseListener();
-
 	schedule(schedule_selector(GameScene::MapMoveUpdate),1.0/60);
 
 	if (CocosDenshion::SimpleAudioEngine::sharedEngine()->isBackgroundMusicPlaying())
@@ -56,11 +54,6 @@ bool GameScene::init()
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/ShortChangeHero.mp3", true);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(0.4);
 	}
-
-	
-	//===========test code==============
-
-
 
 	return true;
 }
@@ -98,18 +91,6 @@ void GameScene::MapMoveUpdate(float dt)
 }
 
 
-/*void GameScene::createMouseListener()
-{
-	auto pListener = EventListenerMouse::create();
-	pListener->onMouseDown = [=](EventMouse* event)
-	{
-		float x = event->getCursorX();
-		float y = event->getCursorY();
-	};
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(pListener, this);
-}*/
-
-
 void GameScene::createMap()
 {
 	this->_map = MapLayer::getInstance();
@@ -135,33 +116,63 @@ void GameScene::createInfoBoard()
 }
 
 
+/**
+*根据_roomNumber
+*初始化游戏场景
+*/
 void GameScene::initGame()
 {
-	GameManager::getInstance()->_money = ORIGIN_MONEY;
-	GameManager::getInstance()->_salary = ORIGIN_SALARY;
-	GameManager::getInstance()->_electric = ORIGIN_ELECTRIC;
+	//第一个进房间的出生在左上角
+	if (!User::getInstance()->_roomNumber)
+	{
+		//产生友军
+		auto base = Building::create(Building::BuildingType::BASE);
+		base->setPosition(Vec2(440, 2950));
+		base->setTag(GameManager::getInstance()->_armyTag++);
+		MapLayer::getInstance()->addChild(base);
 
-	auto base = Building::create(Building::BuildingType::BASE);
-	base->setPosition(Vec2(430, 2950));
-	MapLayer::getInstance()->addChild(base);
+		auto famer = Unit::create(Unit::UnitType::FAMER);
+		famer->setPosition(Vec2(600, 2950));
+		famer->setTag(GameManager::getInstance()->_armyTag++);
+		MapLayer::getInstance()->addChild(famer);
 
-	auto famer = Unit::create(Unit::UnitType::FAMER);
-	famer->setPosition(Vec2(250, 2700));
-	MapLayer::getInstance()->addChild(famer);
+		//产生敌军
+		auto base2 = Building::create(Building::BuildingType::BASE, true);
+		base2->setPosition(Vec2(2770, 360));
+		base2->setTag(GameManager::getInstance()->_enemyTag++);
+		MapLayer::getInstance()->addChild(base2);
 
-	auto enemy = Unit::create(Unit::UnitType::WARRIOR,true);
-	enemy->setPosition(Vec2(250, 2500));
-	MapLayer::getInstance()->addChild(enemy);
+		auto famer2 = Unit::create(Unit::UnitType::FAMER, true);
+		famer2->setPosition(Vec2(2600, 350));
+		famer2->setTag(GameManager::getInstance()->_enemyTag++);
+		MapLayer::getInstance()->addChild(famer2);
+	}
+	//第二个进房间的出生在右下角
+	else
+	{
+		//产生敌军
+		auto base = Building::create(Building::BuildingType::BASE,true);
+		base->setPosition(Vec2(440, 2950));
+		base->setTag(GameManager::getInstance()->_enemyTag++);
+		MapLayer::getInstance()->addChild(base);
 
-	auto warrior = Unit::create(Unit::UnitType::WARRIOR);
-	warrior->setPosition(Vec2(280, 2300));
-	MapLayer::getInstance()->addChild(warrior);
+		auto famer = Unit::create(Unit::UnitType::FAMER,true);
+		famer->setPosition(Vec2(600, 2950));
+		famer->setTag(GameManager::getInstance()->_enemyTag++);
+		MapLayer::getInstance()->addChild(famer);
 
-	auto tan = Unit::create(Unit::UnitType::TANK);
-	tan->setPosition(Vec2(1000,2700));
-	MapLayer::getInstance()->addChild(tan);
+		//产生友军
+		auto base2 = Building::create(Building::BuildingType::BASE);
+		base2->setPosition(Vec2(2770, 360));
+		base2->setTag(GameManager::getInstance()->_armyTag++);
+		MapLayer::getInstance()->addChild(base2);
 
-	auto bui = Building::create(Building::BuildingType::BARRACK,true);
-	bui->setPosition(1250, 2300);
-	MapLayer::getInstance()->addChild(bui);
+		auto famer2 = Unit::create(Unit::UnitType::FAMER);
+		famer2->setPosition(Vec2(2600, 350));
+		famer2->setTag(GameManager::getInstance()->_armyTag++);
+		MapLayer::getInstance()->addChild(famer2);
+
+		//重设地图位置
+		_map->setPosition(Vec2(-2175, 210));
+	}
 }

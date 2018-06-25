@@ -56,3 +56,9 @@ void UserBox::setReadyLabel(bool ready)
 
 	readyLabel->setVisible(ready);
 }
+
+
+bool UserBox::isUserReady()
+{
+	return readyLabel->isVisible();
+}

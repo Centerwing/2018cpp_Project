@@ -34,10 +34,8 @@ public:
 		ATTACK
 	} _status;
 
-	//void changeMode();
-
-	//bool _isEnemy;
-	//bool _isSelected;
+	void attack(Element* target);
+	void move(Vec2 pos);
 
 	virtual void getDamage(unsigned damage);
 private:
@@ -45,15 +43,16 @@ private:
 	void createListener();
 	void createPhysics();
 
-	void initUnit(UnitType type);
+	void initUnit(UnitType type, bool isEnemy);
 
 	void attackUpdate(float dt);
-	void attack(Vec2 target);
+
+	Animate* _attackAnima;
+	//void createAttackAnima();
 
 	Sprite* _bullet;
 	void removeBullet();
 
-	void dying();
 	void die();
 };
 

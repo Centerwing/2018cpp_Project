@@ -18,6 +18,14 @@ struct ChangeStatus;
 
 struct Chat;
 
+struct Move;
+
+struct Attack;
+
+struct CreBuilding;
+
+struct CreUnit;
+
 struct Msg;
 
 enum MsgType {
@@ -27,18 +35,28 @@ enum MsgType {
   MsgType_ChangeTeam = 3,
   MsgType_ChangeStatus = 4,
   MsgType_Chat = 5,
+  MsgType_GameStart = 6,
+  MsgType_Move = 7,
+  MsgType_Attack = 8,
+  MsgType_CreBuilding = 9,
+  MsgType_CreUnit = 10,
   MsgType_MIN = MsgType_None,
-  MsgType_MAX = MsgType_Chat
+  MsgType_MAX = MsgType_CreUnit
 };
 
-inline const MsgType (&EnumValuesMsgType())[6] {
+inline const MsgType (&EnumValuesMsgType())[11] {
   static const MsgType values[] = {
     MsgType_None,
     MsgType_Join,
     MsgType_Welcome,
     MsgType_ChangeTeam,
     MsgType_ChangeStatus,
-    MsgType_Chat
+    MsgType_Chat,
+    MsgType_GameStart,
+    MsgType_Move,
+    MsgType_Attack,
+    MsgType_CreBuilding,
+    MsgType_CreUnit
   };
   return values;
 }
@@ -51,6 +69,11 @@ inline const char * const *EnumNamesMsgType() {
     "ChangeTeam",
     "ChangeStatus",
     "Chat",
+    "GameStart",
+    "Move",
+    "Attack",
+    "CreBuilding",
+    "CreUnit",
     nullptr
   };
   return names;
@@ -68,18 +91,26 @@ enum Info {
   Info_ChangeTeam = 3,
   Info_ChangeStatus = 4,
   Info_Chat = 5,
+  Info_Move = 6,
+  Info_Attack = 7,
+  Info_CreBuilding = 8,
+  Info_CreUnit = 9,
   Info_MIN = Info_NONE,
-  Info_MAX = Info_Chat
+  Info_MAX = Info_CreUnit
 };
 
-inline const Info (&EnumValuesInfo())[6] {
+inline const Info (&EnumValuesInfo())[10] {
   static const Info values[] = {
     Info_NONE,
     Info_Join,
     Info_Welcome,
     Info_ChangeTeam,
     Info_ChangeStatus,
-    Info_Chat
+    Info_Chat,
+    Info_Move,
+    Info_Attack,
+    Info_CreBuilding,
+    Info_CreUnit
   };
   return values;
 }
@@ -92,6 +123,10 @@ inline const char * const *EnumNamesInfo() {
     "ChangeTeam",
     "ChangeStatus",
     "Chat",
+    "Move",
+    "Attack",
+    "CreBuilding",
+    "CreUnit",
     nullptr
   };
   return names;
@@ -124,6 +159,22 @@ template<> struct InfoTraits<ChangeStatus> {
 
 template<> struct InfoTraits<Chat> {
   static const Info enum_value = Info_Chat;
+};
+
+template<> struct InfoTraits<Move> {
+  static const Info enum_value = Info_Move;
+};
+
+template<> struct InfoTraits<Attack> {
+  static const Info enum_value = Info_Attack;
+};
+
+template<> struct InfoTraits<CreBuilding> {
+  static const Info enum_value = Info_CreBuilding;
+};
+
+template<> struct InfoTraits<CreUnit> {
+  static const Info enum_value = Info_CreUnit;
 };
 
 bool VerifyInfo(flatbuffers::Verifier &verifier, const void *obj, Info type);
@@ -380,6 +431,236 @@ inline flatbuffers::Offset<Chat> CreateChatDirect(
       chat ? _fbb.CreateString(chat) : 0);
 }
 
+struct Move FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_TAG = 4,
+    VT_X = 6,
+    VT_Y = 8
+  };
+  int32_t tag() const {
+    return GetField<int32_t>(VT_TAG, 0);
+  }
+  int32_t x() const {
+    return GetField<int32_t>(VT_X, 0);
+  }
+  int32_t y() const {
+    return GetField<int32_t>(VT_Y, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_TAG) &&
+           VerifyField<int32_t>(verifier, VT_X) &&
+           VerifyField<int32_t>(verifier, VT_Y) &&
+           verifier.EndTable();
+  }
+};
+
+struct MoveBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_tag(int32_t tag) {
+    fbb_.AddElement<int32_t>(Move::VT_TAG, tag, 0);
+  }
+  void add_x(int32_t x) {
+    fbb_.AddElement<int32_t>(Move::VT_X, x, 0);
+  }
+  void add_y(int32_t y) {
+    fbb_.AddElement<int32_t>(Move::VT_Y, y, 0);
+  }
+  explicit MoveBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  MoveBuilder &operator=(const MoveBuilder &);
+  flatbuffers::Offset<Move> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<Move>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<Move> CreateMove(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t tag = 0,
+    int32_t x = 0,
+    int32_t y = 0) {
+  MoveBuilder builder_(_fbb);
+  builder_.add_y(y);
+  builder_.add_x(x);
+  builder_.add_tag(tag);
+  return builder_.Finish();
+}
+
+struct Attack FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_ATTACKER = 4,
+    VT_TARGET = 6
+  };
+  int32_t attacker() const {
+    return GetField<int32_t>(VT_ATTACKER, 0);
+  }
+  int32_t target() const {
+    return GetField<int32_t>(VT_TARGET, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_ATTACKER) &&
+           VerifyField<int32_t>(verifier, VT_TARGET) &&
+           verifier.EndTable();
+  }
+};
+
+struct AttackBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_attacker(int32_t attacker) {
+    fbb_.AddElement<int32_t>(Attack::VT_ATTACKER, attacker, 0);
+  }
+  void add_target(int32_t target) {
+    fbb_.AddElement<int32_t>(Attack::VT_TARGET, target, 0);
+  }
+  explicit AttackBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  AttackBuilder &operator=(const AttackBuilder &);
+  flatbuffers::Offset<Attack> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<Attack>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<Attack> CreateAttack(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t attacker = 0,
+    int32_t target = 0) {
+  AttackBuilder builder_(_fbb);
+  builder_.add_target(target);
+  builder_.add_attacker(attacker);
+  return builder_.Finish();
+}
+
+struct CreBuilding FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_TYPE = 4,
+    VT_X = 6,
+    VT_Y = 8
+  };
+  int32_t type() const {
+    return GetField<int32_t>(VT_TYPE, 0);
+  }
+  int32_t x() const {
+    return GetField<int32_t>(VT_X, 0);
+  }
+  int32_t y() const {
+    return GetField<int32_t>(VT_Y, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_TYPE) &&
+           VerifyField<int32_t>(verifier, VT_X) &&
+           VerifyField<int32_t>(verifier, VT_Y) &&
+           verifier.EndTable();
+  }
+};
+
+struct CreBuildingBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_type(int32_t type) {
+    fbb_.AddElement<int32_t>(CreBuilding::VT_TYPE, type, 0);
+  }
+  void add_x(int32_t x) {
+    fbb_.AddElement<int32_t>(CreBuilding::VT_X, x, 0);
+  }
+  void add_y(int32_t y) {
+    fbb_.AddElement<int32_t>(CreBuilding::VT_Y, y, 0);
+  }
+  explicit CreBuildingBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  CreBuildingBuilder &operator=(const CreBuildingBuilder &);
+  flatbuffers::Offset<CreBuilding> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<CreBuilding>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<CreBuilding> CreateCreBuilding(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t type = 0,
+    int32_t x = 0,
+    int32_t y = 0) {
+  CreBuildingBuilder builder_(_fbb);
+  builder_.add_y(y);
+  builder_.add_x(x);
+  builder_.add_type(type);
+  return builder_.Finish();
+}
+
+struct CreUnit FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_TYPE = 4,
+    VT_X = 6,
+    VT_Y = 8
+  };
+  int32_t type() const {
+    return GetField<int32_t>(VT_TYPE, 0);
+  }
+  int32_t x() const {
+    return GetField<int32_t>(VT_X, 0);
+  }
+  int32_t y() const {
+    return GetField<int32_t>(VT_Y, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_TYPE) &&
+           VerifyField<int32_t>(verifier, VT_X) &&
+           VerifyField<int32_t>(verifier, VT_Y) &&
+           verifier.EndTable();
+  }
+};
+
+struct CreUnitBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_type(int32_t type) {
+    fbb_.AddElement<int32_t>(CreUnit::VT_TYPE, type, 0);
+  }
+  void add_x(int32_t x) {
+    fbb_.AddElement<int32_t>(CreUnit::VT_X, x, 0);
+  }
+  void add_y(int32_t y) {
+    fbb_.AddElement<int32_t>(CreUnit::VT_Y, y, 0);
+  }
+  explicit CreUnitBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  CreUnitBuilder &operator=(const CreUnitBuilder &);
+  flatbuffers::Offset<CreUnit> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<CreUnit>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<CreUnit> CreateCreUnit(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int32_t type = 0,
+    int32_t x = 0,
+    int32_t y = 0) {
+  CreUnitBuilder builder_(_fbb);
+  builder_.add_y(y);
+  builder_.add_x(x);
+  builder_.add_type(type);
+  return builder_.Finish();
+}
+
 struct Msg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_TYPE = 4,
@@ -411,6 +692,18 @@ struct Msg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const Chat *data_as_Chat() const {
     return data_type() == Info_Chat ? static_cast<const Chat *>(data()) : nullptr;
   }
+  const Move *data_as_Move() const {
+    return data_type() == Info_Move ? static_cast<const Move *>(data()) : nullptr;
+  }
+  const Attack *data_as_Attack() const {
+    return data_type() == Info_Attack ? static_cast<const Attack *>(data()) : nullptr;
+  }
+  const CreBuilding *data_as_CreBuilding() const {
+    return data_type() == Info_CreBuilding ? static_cast<const CreBuilding *>(data()) : nullptr;
+  }
+  const CreUnit *data_as_CreUnit() const {
+    return data_type() == Info_CreUnit ? static_cast<const CreUnit *>(data()) : nullptr;
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int8_t>(verifier, VT_TYPE) &&
@@ -439,6 +732,22 @@ template<> inline const ChangeStatus *Msg::data_as<ChangeStatus>() const {
 
 template<> inline const Chat *Msg::data_as<Chat>() const {
   return data_as_Chat();
+}
+
+template<> inline const Move *Msg::data_as<Move>() const {
+  return data_as_Move();
+}
+
+template<> inline const Attack *Msg::data_as<Attack>() const {
+  return data_as_Attack();
+}
+
+template<> inline const CreBuilding *Msg::data_as<CreBuilding>() const {
+  return data_as_CreBuilding();
+}
+
+template<> inline const CreUnit *Msg::data_as<CreUnit>() const {
+  return data_as_CreUnit();
 }
 
 struct MsgBuilder {
@@ -500,6 +809,22 @@ inline bool VerifyInfo(flatbuffers::Verifier &verifier, const void *obj, Info ty
     }
     case Info_Chat: {
       auto ptr = reinterpret_cast<const Chat *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case Info_Move: {
+      auto ptr = reinterpret_cast<const Move *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case Info_Attack: {
+      auto ptr = reinterpret_cast<const Attack *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case Info_CreBuilding: {
+      auto ptr = reinterpret_cast<const CreBuilding *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case Info_CreUnit: {
+      auto ptr = reinterpret_cast<const CreUnit *>(obj);
       return verifier.VerifyTable(ptr);
     }
     default: return false;

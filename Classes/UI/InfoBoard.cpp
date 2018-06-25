@@ -41,6 +41,7 @@ InfoBoard* InfoBoard::getInstance()
 
 void InfoBoard::createBuildingButton(Building::BuildingType type)
 {	
+	//Unit建造价钱在这里修改
 	if (type == Building::BuildingType::BASE)
 	{
 		auto famer = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/famer.jpg" : "Element/p/famer.jpg");
@@ -57,9 +58,14 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				if (GameManager::getInstance()->_money >= 50)
 				{
 					auto unit = Unit::create(Unit::UnitType::FAMER);
-					unit->setPosition(GameManager::getInstance()->_selectedBox[0]->getPosition());
+					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
+					unit->setPosition(pos);
 					GameManager::getInstance()->_money -= 50;
-					GameManager::getInstance()->_salary += 10;
+					//GameManager::getInstance()->_salary += 10;
+
+					unit->setTag(GameManager::getInstance()->_armyTag++);
+
+					GameManager::getInstance()->createUnit(Unit::UnitType::FAMER, pos);
 
 					MapLayer::getInstance()->addChild(unit);
 				}	
@@ -96,8 +102,13 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				if (GameManager::getInstance()->_money >= 50)
 				{
 					auto unit = Unit::create(Unit::UnitType::WARRIOR);
-					unit->setPosition(GameManager::getInstance()->_selectedBox[0]->getPosition());
+					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
+					unit->setPosition(pos);
 					GameManager::getInstance()->_money -= 75;
+
+					unit->setTag(GameManager::getInstance()->_armyTag++);
+
+					GameManager::getInstance()->createUnit(Unit::UnitType::WARRIOR, pos);
 
 					MapLayer::getInstance()->addChild(unit);
 				}
@@ -139,8 +150,13 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				if (GameManager::getInstance()->_money >= 50)
 				{
 					auto unit = Unit::create(Unit::UnitType::TANK);
-					unit->setPosition(GameManager::getInstance()->_selectedBox[0]->getPosition());
+					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
+					unit->setPosition(pos);
 					GameManager::getInstance()->_money -= 125;
+
+					unit->setTag(GameManager::getInstance()->_armyTag++);
+
+					GameManager::getInstance()->createUnit(Unit::UnitType::TANK, pos);
 
 					MapLayer::getInstance()->addChild(unit);
 				}
@@ -182,8 +198,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 				auto button = static_cast<ui::Button*>(pRef);
 
-				/*创建图标跟随指针
-				*/
+				//创建图标跟随指针
 				auto lis = EventListenerMouse::create();
 				auto icon = Sprite::create(GameManager::getInstance()->_team ? "Element/t/barrack.png" : "Element/p/barrack.png");
 				icon->setOpacity(80);
@@ -206,8 +221,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 				};
 				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(lis, icon);
 
-				/* 点击建造的监听器
-				 */
+				//点击建造的监听器
 				auto pListener = EventListenerMouse::create();
 				pListener->onMouseDown = [=](EventMouse* event)
 				{
@@ -222,6 +236,10 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 							auto build = Building::create(Building::BuildingType::BARRACK);
 							build->setPosition(loca);
+
+							build->setTag(GameManager::getInstance()->_armyTag++);
+
+							GameManager::getInstance()->createBuilding(Building::BuildingType::BARRACK, loca);
 
 							MapLayer::getInstance()->addChild(build);
 							GameManager::getInstance()->_money -= 150;
@@ -292,8 +310,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 				auto button = static_cast<ui::Button*>(pRef);
 
-				/*创建图标跟随指针
-				*/
+				//创建图标跟随指针
 				auto lis = EventListenerMouse::create();
 				auto icon = Sprite::create(GameManager::getInstance()->_team ? "Element/t/crystal.png" : "Element/p/crystal.png");
 				icon->setOpacity(100);
@@ -316,8 +333,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 				};
 				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(lis, icon);
 
-				/* 点击建造的监听器
-				*/
+				//点击建造的监听器
 				auto pListener = EventListenerMouse::create();
 				pListener->onMouseDown = [=](EventMouse* event)
 				{
@@ -332,6 +348,11 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 							auto build = Building::create(Building::BuildingType::CRYSTAL);
 							build->setPosition(loca);
+
+							build->setTag(GameManager::getInstance()->_armyTag++);
+
+							GameManager::getInstance()->createBuilding(Building::BuildingType::CRYSTAL, loca);
+
 							MapLayer::getInstance()->addChild(build);
 							GameManager::getInstance()->_money -= 100;
 							GameManager::getInstance()->_electric += 5;
@@ -342,8 +363,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 						else if (GameManager::getInstance()->_money < 100)
 						{
-							/*提示金钱不足
-							*/
+							//提示金钱不足
 							auto alert = Label::create("Not enoough money!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 226);
 							this->addChild(alert, 1, 11);
@@ -351,8 +371,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 						}
 						else if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) >= 250)
 						{
-							/*提示距离太远
-							*/
+							//提示距离太远
 							auto alert = Label::create("It's too far!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 286);
 							this->addChild(alert, 1, 13);
@@ -361,7 +380,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 					}
 
-					/*取消点击建造的事件监听
+					/**
+					*取消点击建造的事件监听
 					*取消图标跟随
 					*/
 					else if (event->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT)
@@ -391,8 +411,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 				auto button = static_cast<ui::Button*>(pRef);
 
-				/*创建图标跟随指针
-				*/
+				//创建图标跟随指针
 				auto lis = EventListenerMouse::create();
 				auto icon = Sprite::create(GameManager::getInstance()->_team ? "Element/t/machinery.png" : "Element/p/machinery.png");
 				icon->setOpacity(100);
@@ -415,8 +434,7 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 				};
 				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(lis, icon);
 
-				/* 点击建造的监听器
-				*/
+				//点击建造的监听器
 				auto pListener = EventListenerMouse::create();
 				pListener->onMouseDown = [=](EventMouse* event)
 				{
@@ -431,6 +449,11 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 							auto build = Building::create(Building::BuildingType::MACHINERY);
 							build->setPosition(loca);
+
+							build->setTag(GameManager::getInstance()->_armyTag++);
+
+							GameManager::getInstance()->createBuilding(Building::BuildingType::MACHINERY, loca);
+
 							MapLayer::getInstance()->addChild(build);
 							GameManager::getInstance()->_money -= 200;
 							GameManager::getInstance()->_electric -= 10;
@@ -470,7 +493,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 					}
 
-					/*取消点击建造的事件监听
+					/**
+					*取消点击建造的事件监听
 					*取消图标跟随
 					*/
 					else if (event->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT)
@@ -664,13 +688,14 @@ void InfoBoard::moneyInfoUpdate(float dt)
 void InfoBoard::createMoneyInfo()
 {
 	_moneyInfo = Label::create("crystal: " + std::to_string(GameManager::getInstance()->_money) +
-		"  electric: " + std::to_string(GameManager::getInstance()->_electric), "fonts/arial.ttf", 24);
+		"(+" + std::to_string(GameManager::getInstance()->_salary) + ")"
+		"  electric: " + std::to_string(GameManager::getInstance()->_electric),
+		"fonts/arial.ttf", 24);
 	_moneyInfo->enableGlow(Color4B::BLUE);
-	_moneyInfo->setPosition(Vec2(860, 750));
+	_moneyInfo->setPosition(Vec2(850, 750));
 
 	addChild(_moneyInfo,1);
 }
-
 
 
 void InfoBoard::removeAlertM(float dt)
@@ -678,10 +703,12 @@ void InfoBoard::removeAlertM(float dt)
 	InfoBoard::getInstance()->removeChildByTag(11);
 }
 
+
 void InfoBoard::removeAlertE(float dt)
 {
 	InfoBoard::getInstance()->removeChildByTag(12);
 }
+
 
 void InfoBoard::removeAlertF(float dt)
 {

@@ -174,9 +174,6 @@ void RoomScene::createReadyButton()
 			User::getInstance()->_ready = isReady;
 			button->setTitleText(getShowText(isReady));
 			if (readyButtonCallBack) readyButtonCallBack(isReady);
-
-			//just for testing!!!!!!!!!
-			//Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
 		}
 	});
 

@@ -16,6 +16,8 @@ public:
 
 	void setReadyLabel(bool ready);
 
+	bool isUserReady();
+
 private:
 	bool _team;
 	cocos2d::Sprite* teamPic = nullptr;

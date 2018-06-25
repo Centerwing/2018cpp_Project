@@ -39,7 +39,7 @@ void Client::onOpen(WebSocket * ws)
 void Client::onMessage(WebSocket * ws, const WebSocket::Data & data)
 {
 	auto msg = GetMsg(data.bytes);
-	auto func = getFunc(msg->data_type());
+	auto func = getFunc(msg->type());
 	if (func) func(msg->data());
 }
 
@@ -74,7 +74,7 @@ void Client::close()
 	if (isConnected()) _ws->closeAsync();
 }
 
-void Client::send(const uint8_t* buf, const size_t len)                          //发送2进制数据
+void Client::send(const uint8_t* buf, const size_t len)                          
 {
 	if (isConnected()) _ws->send(buf, len);
 }

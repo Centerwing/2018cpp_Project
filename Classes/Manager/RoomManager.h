@@ -23,8 +23,6 @@ public:
 
 	int _roomNumber;
 
-	//void sendChat(const std::string& text);
-
 private:
 	Client* client;
 	int gameStatus;
@@ -41,6 +39,8 @@ private:
 	void onChangeStatus(const void* msg);
 
 	void onChat(const void* msg);
+
+	//void onGameStart(const void* msg);
 };
 
 #endif

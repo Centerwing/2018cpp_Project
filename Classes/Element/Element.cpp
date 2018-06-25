@@ -5,5 +5,4 @@
 
 void Element::getDamage(unsigned damage)
 {
-	MapLayer::getInstance()->removeChild(this);
 }

@@ -18,6 +18,7 @@ public:
 	bool _team;//true = terran , false = protoss
 	bool _enemyTeam;
 	bool _ready;
+	int _roomNumber;
 
 	void setName(const std::string& name) { this->_name = name; };
 	std::string getName() const { return _name; };

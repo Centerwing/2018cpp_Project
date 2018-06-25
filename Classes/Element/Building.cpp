@@ -12,7 +12,7 @@ Building* Building::create(BuildingType type,bool isEnemy)
 {
 	auto pBuilding = new Building;
 
-	pBuilding->initBuilding(type);
+	pBuilding->initBuilding(type,isEnemy);
 	pBuilding->createListener();
 	pBuilding->createPhysics();
 
@@ -74,29 +74,41 @@ void Building::createPhysics()
 
 /* 各单位参数可以在这里设置
  */
-void Building::initBuilding(BuildingType type) 
+void Building::initBuilding(BuildingType type,bool isEnemy) 
 {
 	switch (type)
 	{
 	case BuildingType::BASE:
-		this->initWithFile(GameManager::getInstance()->_team ? "Element/t/base.png" : "Element/p/base.png");  
+		if (isEnemy)
+			this->initWithFile(GameManager::getInstance()->_enemyTeam ? "Element/t/base.png" : "Element/p/base.png");
+		else
+			this->initWithFile(GameManager::getInstance()->_team ? "Element/t/base.png" : "Element/p/base.png");
 		this->_type = BuildingType::BASE;
 		this->_health = 1500;
 		break;
 	case BuildingType::BARRACK:
-		this->initWithFile(GameManager::getInstance()->_team ? "Element/t/barrack.png" : "Element/p/barrack.png");
+		if (isEnemy)
+			this->initWithFile(GameManager::getInstance()->_enemyTeam ? "Element/t/barrack.png" : "Element/p/barrack.png");
+		else
+			this->initWithFile(GameManager::getInstance()->_team ? "Element/t/barrack.png" : "Element/p/barrack.png");
 		this->_type = BuildingType::BARRACK;
 		this->_health = 1000;
 
 		break;
 	case BuildingType::CRYSTAL:
-		this->initWithFile(GameManager::getInstance()->_team ? "Element/t/crystal.png" : "Element/p/crystal.png");
+		if (isEnemy)
+			this->initWithFile(GameManager::getInstance()->_enemyTeam ? "Element/t/crystal.png" : "Element/p/crystal.png");
+		else
+			this->initWithFile(GameManager::getInstance()->_team ? "Element/t/crystal.png" : "Element/p/crystal.png");
 		this->_type = BuildingType::CRYSTAL;
 		this->_health = 400;
 
 		break;
 	case BuildingType::MACHINERY:
-		this->initWithFile(GameManager::getInstance()->_team ? "Element/t/machinery.png" : "Element/p/machinery.png");
+		if (isEnemy)
+			this->initWithFile(GameManager::getInstance()->_enemyTeam ? "Element/t/machinery.png" : "Element/p/machinery.png");
+		else
+			this->initWithFile(GameManager::getInstance()->_team ? "Element/t/machinery.png" : "Element/p/machinery.png");
 		this->_type = BuildingType::MACHINERY;
 		this->_health = 1250;
 
@@ -121,41 +133,31 @@ void Building::die()
 }
 
 
-void Building::dying()
-{
-	auto animation = Animation::create();
-	animation->addSpriteFrameWithFile("element/die/building/die1.png");
-	animation->addSpriteFrameWithFile("element/die/building/die2.png");
-	animation->addSpriteFrameWithFile("element/die/building/die3.png");
-	animation->addSpriteFrameWithFile("element/die/building/die4.png");
-	animation->addSpriteFrameWithFile("element/die/building/die5.png");
-    animation->addSpriteFrameWithFile("element/die/building/die6.png");
-	animation->addSpriteFrameWithFile("element/die/building/die7.png");////////////////////
-	animation->setLoops(1);
-	animation->setDelayPerUnit(0.04);
-
-	auto animate = Animate::create(animation);
-
-	auto todie = CallFunc::create(CC_CALLBACK_0(Building::die, this));
-
-	auto sequence = Sequence::create(animate, todie, NULL);
-
-	//如果不先去除PhysicsBody 会有点小bug
-	this->getPhysicsBody()->removeFromWorld();
-	this->runAction(sequence);
-}
-
-
 void Building::getDamage(unsigned damage)
 {
 	this->_health -= damage;
+
 	if (this->_health < 0)
 	{
-		//死亡之后延迟播放动画，与被击中同步
-		auto delay = DelayTime::create(0.4);
-		auto dy = CallFunc::create(CC_CALLBACK_0(Building::dying, this));
-		auto sequence = Sequence::create(delay, dy, NULL);
+		auto animation = Animation::create();
+		animation->addSpriteFrameWithFile("element/die/building/die1.png");
+		animation->addSpriteFrameWithFile("element/die/building/die2.png");
+		animation->addSpriteFrameWithFile("element/die/building/die3.png");
+		animation->addSpriteFrameWithFile("element/die/building/die4.png");
+		animation->addSpriteFrameWithFile("element/die/building/die5.png");
+		animation->addSpriteFrameWithFile("element/die/building/die6.png");
+		animation->addSpriteFrameWithFile("element/die/building/die7.png");////////////////////
+		animation->setLoops(1);
+		animation->setDelayPerUnit(0.04);
 
+		auto animate = Animate::create(animation);
+
+		auto godie = CallFunc::create(CC_CALLBACK_0(Building::die, this));
+
+		auto sequence = Sequence::create(animate, godie, NULL);
+
+		//如果不先去除PhysicsBody 会有bug
+		this->getPhysicsBody()->removeFromWorld();
 		this->runAction(sequence);
 	}
 }

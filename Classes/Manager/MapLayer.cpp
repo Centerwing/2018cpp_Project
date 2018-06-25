@@ -21,9 +21,6 @@ bool MapLayer::init()
 	
 	createWalls();
 
-	/* 框选
-	 * 初始大小为1000*1000
-	 */
 	//_select = Sprite::create("map/map.png");
 	createSelectListener();
 
@@ -74,6 +71,7 @@ void MapLayer::createWalls()
 }
 
 
+//框选
 void MapLayer::createSelectListener()
 {
 	auto listener = EventListenerTouchOneByOne::create();
