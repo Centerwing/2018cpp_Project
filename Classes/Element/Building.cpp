@@ -19,6 +19,11 @@ Building* Building::create(BuildingType type,bool isEnemy)
 	pBuilding->_isSelected = false;
 	pBuilding->_isEnemy = isEnemy;
 
+	pBuilding->_buildBar = ui::LoadingBar::create("gameScene/buildBar.png");
+	pBuilding->_buildBar->setPercent(0);
+	pBuilding->_buildBar->setPosition(pBuilding->getContentSize() / 2);
+	pBuilding->addChild(pBuilding->_buildBar);
+
 	//pBuilding->autorelease();
 
 	if (isEnemy)
@@ -167,7 +172,7 @@ void Building::getDamage(unsigned damage)
 			animation->addSpriteFrameWithFile("element/die/building/die5.png");
 			animation->addSpriteFrameWithFile("element/die/building/die6.png");
 			animation->setLoops(1);
-			animation->setDelayPerUnit(0.04);
+			animation->setDelayPerUnit(0.05);
 
 			auto animate = Animate::create(animation);
 
@@ -190,4 +195,55 @@ void Building::setSelected()
 void Building::unSelected()
 {
 	this->setColor(Color3B(255, 255, 255));
+}
+
+
+void Building::buildUpdate(float dt)
+{
+	_buildBar->setPercent(_buildBar->getPercent() + 2);
+
+	if (_buildBar->getPercent() == 100)
+	{
+		_buildBar->setPercent(0);
+		
+		Unit::UnitType type;
+		if (this->_type == BuildingType::BASE)
+		{
+			type = Unit::UnitType::FAMER;
+		}
+		else if (this->_type == BuildingType::BARRACK)
+		{
+			type = Unit::UnitType::WARRIOR;
+		}
+		else if (this->_type == BuildingType::MACHINERY)
+		{
+			type = Unit::UnitType::TANK;
+		}
+
+		auto unit = Unit::create(type);
+		auto pos = this->getPosition();
+
+		//加一个小的位置偏移
+		pos.y -= 50;
+
+		unit->setPosition(pos);
+		unit->setTag(GameManager::getInstance()->_armyTag++);
+
+		GameManager::getInstance()->_money -= 50;
+
+		GameManager::getInstance()->createUnit(unit->_type, pos);
+
+		MapLayer::getInstance()->addChild(unit);
+
+		this->unschedule(schedule_selector(Building::buildUpdate));
+	}
+}
+
+
+void Building::createUnit()
+{
+	_buildBar->setPercent(2);
+
+	//单位建造时间可以在这里修改
+	schedule(schedule_selector(Building::buildUpdate), 0.25);
 }

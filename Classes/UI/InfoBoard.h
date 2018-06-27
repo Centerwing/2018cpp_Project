@@ -24,8 +24,8 @@ public:
 	
 	void clearBoard();
 private:
-	void createBuildingButton(Building::BuildingType type);
-	void createUnitButton(Unit::UnitType type);
+	void createBuildingButton(Building* build);
+	void createUnitButton(Unit* unit);
 
 	void showInfo(Building* building);
 	void showInfo(Unit* unit);

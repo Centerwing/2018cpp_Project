@@ -40,8 +40,9 @@ InfoBoard* InfoBoard::getInstance()
 }
 
 
-void InfoBoard::createBuildingButton(Building::BuildingType type)
+void InfoBoard::createBuildingButton(Building* build)
 {	
+	auto type = build->_type;
 	//Unit建造价钱在这里修改
 	if (type == Building::BuildingType::BASE)
 	{
@@ -51,7 +52,7 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 
 		famer->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
-			if (type == ui::Widget::TouchEventType::ENDED)
+			if (type == ui::Widget::TouchEventType::ENDED&&build->_buildBar->getPercent() == 0)
 			{
 				if (UserDefault::getInstance()->
 					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
@@ -60,21 +61,11 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 			
 				if (GameManager::getInstance()->_money >= 50)
 				{
-					auto unit = Unit::create(Unit::UnitType::FAMER);
-					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
+					build->createUnit();
 
-					//加一个小的位置偏移，防止两面位置不同步
-					pos.y += 50;
+					//GameManager::getInstance()->createUnit(Unit::UnitType::FAMER, pos);
 
-					unit->setPosition(pos);
-					GameManager::getInstance()->_money -= 50;
-					//GameManager::getInstance()->_salary += 10;
-
-					unit->setTag(GameManager::getInstance()->_armyTag++);
-
-					GameManager::getInstance()->createUnit(Unit::UnitType::FAMER, pos);
-
-					MapLayer::getInstance()->addChild(unit);
+					//MapLayer::getInstance()->addChild(unit);
 				}	
 				else if (GameManager::getInstance()->_money < 50)
 				{
@@ -101,7 +92,7 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 
 		fighter->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
-			if (type == ui::Widget::TouchEventType::ENDED)
+			if (type == ui::Widget::TouchEventType::ENDED&&build->_buildBar->getPercent() == 0)
 			{
 				if (UserDefault::getInstance()->
 					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
@@ -110,20 +101,7 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 
 				if (GameManager::getInstance()->_money >= 50)
 				{
-					auto unit = Unit::create(Unit::UnitType::WARRIOR);
-					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
-
-					//加一个小的位置偏移，防止两面位置不同步
-					pos.y += 50;
-
-					unit->setPosition(pos);
-					GameManager::getInstance()->_money -= 75;
-
-					unit->setTag(GameManager::getInstance()->_armyTag++);
-
-					GameManager::getInstance()->createUnit(Unit::UnitType::WARRIOR, pos);
-
-					MapLayer::getInstance()->addChild(unit);
+					build->createUnit();
 				}
 				else if (GameManager::getInstance()->_money < 50)
 				{
@@ -155,7 +133,7 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 
 		warrior->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
-			if (type == ui::Widget::TouchEventType::ENDED)
+			if (type == ui::Widget::TouchEventType::ENDED&&build->_buildBar->getPercent() == 0)
 			{
 				if (UserDefault::getInstance()->
 					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
@@ -164,20 +142,7 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 
 				if (GameManager::getInstance()->_money >= 50)
 				{
-					auto unit = Unit::create(Unit::UnitType::TANK);
-					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
-
-					//加一个小的位置偏移，防止两面位置不同步
-					pos.y += 50;
-
-					unit->setPosition(pos);
-					GameManager::getInstance()->_money -= 125;
-
-					unit->setTag(GameManager::getInstance()->_armyTag++);
-
-					GameManager::getInstance()->createUnit(Unit::UnitType::TANK, pos);
-
-					MapLayer::getInstance()->addChild(unit);
+					build->createUnit();
 				}
 				else if (GameManager::getInstance()->_money < 50)
 				{
@@ -190,17 +155,15 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 			}
 		});
 
-
 		warrior->setPosition(Vec2(770, 150));
 		_board->addChild(warrior, 1);
 	}
-
-
 }
 
 
-void InfoBoard::createUnitButton(Unit::UnitType type)
+void InfoBoard::createUnitButton(Unit* unit)
 {
+	auto type = unit->_type;
 
 	if (type == Unit::UnitType::FAMER)
 	{
@@ -596,7 +559,7 @@ void InfoBoard::changeBoard(Building* building)
 {
 	clearBoard();
 
-	if(!building->_isEnemy)createBuildingButton(building->_type);
+	if(!building->_isEnemy)createBuildingButton(building);
 	showInfo(building);
 }
 
@@ -605,7 +568,7 @@ void InfoBoard::changeBoard(Unit* unit)
 {
 	clearBoard();
 
-	if (!unit->_isEnemy)createUnitButton(unit->_type);
+	if (!unit->_isEnemy)createUnitButton(unit);
 	showInfo(unit);
 }
 

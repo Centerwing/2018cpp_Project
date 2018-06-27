@@ -313,7 +313,7 @@ using namespace MyGame;
 			 animation->addSpriteFrameWithFile("element/die/unit/die9.png");
 			 animation->addSpriteFrameWithFile("element/die/unit/die10.png");
 			 animation->setLoops(1);
-			 animation->setDelayPerUnit(0.07);
+			 animation->setDelayPerUnit(0.04);
 
 			 auto animate = Animate::create(animation);
 

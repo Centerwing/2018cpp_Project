@@ -2,8 +2,10 @@
 #define _BUILDING_H_
 
 #include"cocos2d.h"
+#include"UI/CocosGUI.h"
 
 #include"Element.h"
+#include"Unit.h"
 
 USING_NS_CC;
 
@@ -25,12 +27,19 @@ public:
 	virtual void setSelected();
 	virtual void unSelected();
 
+	ui::LoadingBar* _buildBar;
+	
+	void createUnit();
 	//bool _isSelected;
 	//bool _isEnemy;
 
 	//unsigned _electric;
 	
 private:
+	Unit * _unit;
+	Vec2 _pos;
+	
+	void buildUpdate(float dt);
 
 	void createListener();
 	void createPhysics();

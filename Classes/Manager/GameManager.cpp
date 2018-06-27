@@ -248,7 +248,8 @@ void GameManager::gameOver(bool win)
 
 	auto pLabel = Label::create(win ? "You Win!" : "You Lose!", "fonts/Marker Felt.ttf", 82);
 	pLabel->setTextColor(Color4B::WHITE);
-	pLabel->setPosition(Director::getInstance()->getVisibleSize() / 2);
+	pLabel->setPosition(Director::getInstance()->getVisibleSize().width / 2,
+		Director::getInstance()->getVisibleSize().height / 2 + 128);
 	InfoBoard::getInstance()->addChild(pLabel,5);
 
 	scheduleOnce(schedule_selector(GameManager::over, this), 5);
