@@ -23,7 +23,7 @@ using namespace MyGame;
 	 pUnit->_isSelected = false;
 	 pUnit->_isEnemy = isEnemy;
 
-	 pUnit->autorelease();
+	 //pUnit->autorelease();
 	 
 	 if (isEnemy)
 		 GameManager::getInstance()->_enemyList.insert(pUnit);
@@ -65,7 +65,7 @@ using namespace MyGame;
 				 {				 
 					 GameManager::getInstance()->_selectedBox.push_back(target);
 
-					 target->setOpacity(150);
+					 target->setSelected();
 					 target->_isSelected = true;
 				 }
 				 
@@ -125,7 +125,7 @@ using namespace MyGame;
 		 else
 			 this->initWithFile(GameManager::getInstance()->_team ? "Element/t/fighter.jpg" : "Element/p/fighter.jpg");
 		 this->_type = UnitType::WARRIOR;
-		 this->_attr = { 15,0.02f,256. };//////attack=6
+		 this->_attr = { 150,0.02f,256. };//////attack=6
 		 this->_health = 45;
 		 this->_attackMode = true;
 		 this->_status = Status::STAND;
@@ -221,7 +221,7 @@ using namespace MyGame;
 
  void Unit::removeBullet()
  {
-	 _bullet->stopAllActions();
+	 //_bullet->stopAllActions();
 	 MapLayer::getInstance()->removeChild(_bullet);
 	 _bullet->release();
 	 _bullet = nullptr;
@@ -265,7 +265,13 @@ using namespace MyGame;
  */
  void Unit::die()
  {
-	 MapLayer::getInstance()->removeChild(this);
+	 if (!GameManager::getInstance()->_selectedBox.empty()&&GameManager::getInstance()->_selectedBox[0] == this)
+	 {
+		 GameManager::getInstance()->clearSelectedBox();
+
+		 InfoBoard::getInstance()->clearBoard();
+	 }
+	 
 	 if (this->_isEnemy)
 	 {
 		 GameManager::getInstance()->_enemyList.erase(this);
@@ -274,38 +280,52 @@ using namespace MyGame;
 	 {
 		 GameManager::getInstance()->_unitList.erase(this);
 	 }
-	 this->release();
+	 
+	 MapLayer::getInstance()->removeChild(this);
+
+	 //this->release();
  }
 
 
  void Unit::getDamage(unsigned damage)
  {
-	 this->_health -= damage;
-
-	 if (this->_health < 0)
+	 if (this->_health > 0)
 	 {
-		 auto animation = Animation::create();
-		 animation->addSpriteFrameWithFile("element/die/unit/die1.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die2.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die3.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die4.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die5.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die6.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die7.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die8.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die9.png");
-		 animation->addSpriteFrameWithFile("element/die/unit/die10.png");
-		 animation->setLoops(1);
-		 animation->setDelayPerUnit(0.04);
+		 this->_health -= damage;
 
-		 auto animate = Animate::create(animation);
+		 if (!GameManager::getInstance()->_selectedBox.empty()&&GameManager::getInstance()->_selectedBox[0] == this)
+		 {
+			 InfoBoard::getInstance()->changeBoard(this);
+		 }
+	 
+		 if (this->_health <= 0)
+		 {
+			 auto animation = Animation::create();
+			
+			 animation->addSpriteFrameWithFile("element/die/unit/die1.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die2.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die3.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die4.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die5.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die6.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die7.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die8.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die9.png");
+			 animation->addSpriteFrameWithFile("element/die/unit/die10.png");
+			 animation->setLoops(1);
+			 animation->setDelayPerUnit(0.07);
 
-		 auto die = std::bind(&Unit::die, this);
-		 auto godie = CallFunc::create(die);
+			 auto animate = Animate::create(animation);
 
-		 auto sequence = Sequence::create(animate, godie, NULL);
+			 auto die = std::bind(&Unit::die, this);
+			 auto godie = CallFunc::create(die);
 
-		 this->runAction(sequence);
+			 auto sequence = Sequence::create(animate, godie, NULL);
+
+			 this->stopAllActions();
+
+			 this->runAction(sequence);
+		 }
 	 }
  }
 
@@ -318,4 +338,74 @@ using namespace MyGame;
 	 pMove->setFlags(1);
 
 	 this->runAction(pMove);
+ }
+
+
+ void Unit::setSelected()
+ {
+	 if (this->_isEnemy ? GameManager::getInstance()->_enemyTeam : GameManager::getInstance()->_team)
+	 {
+		 switch (this->_type)
+		 {
+		 case Unit::UnitType::FAMER:
+			 this->setTexture("element/t/famerSelected.jpg");
+			 break;
+		 case Unit::UnitType::WARRIOR:
+			 this->setTexture("element/t/fighterSelected.jpg");
+			 break;
+		 case Unit::UnitType::TANK:
+			 this->setTexture("element/t/warriorSelected.jpg");
+			 break;
+		 }
+	 }
+	 else
+	 {
+		 switch (this->_type)
+		 {
+		 case Unit::UnitType::FAMER:
+			 this->setTexture("element/p/famerSelected.jpg");
+			 break;
+		 case Unit::UnitType::WARRIOR:
+			 this->setTexture("element/p/fighterSelected.jpg");
+			 break;
+		 case Unit::UnitType::TANK:
+			 this->setTexture("element/p/warriorSelected.jpg");
+			 break;
+		 }
+	 }
+ }
+
+
+ void Unit::unSelected()
+ {
+	 if (this->_isEnemy ? GameManager::getInstance()->_enemyTeam : GameManager::getInstance()->_team)
+	 {
+		 switch (this->_type)
+		 {
+		 case Unit::UnitType::FAMER:
+			 this->setTexture("element/t/famer.jpg");
+			 break;
+		 case Unit::UnitType::WARRIOR:
+			 this->setTexture("element/t/fighter.jpg");
+			 break;
+		 case Unit::UnitType::TANK:
+			 this->setTexture("element/t/warrior.jpg");
+			 break;
+		 }
+	 }
+	 else
+	 {
+		 switch (this->_type)
+		 {
+		 case Unit::UnitType::FAMER:
+			 this->setTexture("element/p/famer.jpg");
+			 break;
+		 case Unit::UnitType::WARRIOR:
+			 this->setTexture("element/p/fighter.jpg");
+			 break;
+		 case Unit::UnitType::TANK:
+			 this->setTexture("element/p/warrior.jpg");
+			 break;
+		 }
+	 }
  }

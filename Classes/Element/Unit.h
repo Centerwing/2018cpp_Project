@@ -37,7 +37,10 @@ public:
 	void attack(Element* target);
 	void move(Vec2 pos);
 
-	virtual void getDamage(unsigned damage);
+	virtual void getDamage(unsigned damage);	
+
+	virtual void setSelected();
+	virtual void unSelected();
 private:
 
 	void createListener();
@@ -48,7 +51,6 @@ private:
 	void attackUpdate(float dt);
 
 	Animate* _attackAnima;
-	//void createAttackAnima();
 
 	Sprite* _bullet;
 	void removeBullet();

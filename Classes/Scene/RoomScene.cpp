@@ -97,10 +97,10 @@ void RoomScene::createUI()
 
 
 	//=============back button=============
-	auto pBack = MenuItemImage::create("icons/Back.png", "icons/BackSelected.png", this, menu_selector(RoomScene::menuCloseCallback));
-	auto pBackMenu = Menu::create(pBack, NULL);
-	pBackMenu->setPosition(64, visibleSize.height - 40);
-	addChild(pBackMenu);
+	//auto pBack = MenuItemImage::create("icons/Back.png", "icons/BackSelected.png", this, menu_selector(RoomScene::menuCloseCallback));
+	//auto pBackMenu = Menu::create(pBack, NULL);
+	//pBackMenu->setPosition(64, visibleSize.height - 40);
+	//addChild(pBackMenu);
 
 	//=============ready button==============
 	createReadyButton();

@@ -5,7 +5,6 @@
 
 #include "flatbuffers/flatbuffers.h"           
 
-
 using namespace MyGame;
 USING_NS_CC;
 
@@ -69,7 +68,7 @@ void RoomManager::onExit()
 	client->clear();
 	client = nullptr;
 #endif // NETWORK
-*/
+    */
 	Layer::onExit();
 }
 
@@ -110,7 +109,7 @@ void RoomManager::ChangeStats(bool ready)
 	{
 		//游戏开始
 		User::getInstance()->_roomNumber = _roomNumber;
-		Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
+		Director::getInstance()->replaceScene(TransitionFade::create(1.2f, GameScene::createScene()));
 	}
 }
 
@@ -178,7 +177,7 @@ void RoomManager::onChangeStatus(const void* msg)
 	{
 		//游戏开始
 		User::getInstance()->_roomNumber = _roomNumber;
-		Director::getInstance()->pushScene(TransitionFade::create(1.2f, GameScene::createScene()));
+		Director::getInstance()->replaceScene(TransitionFade::create(1.2f, GameScene::createScene()));
 	}
 }
 
@@ -188,6 +187,7 @@ void RoomManager::onChat(const void * msg)
 	auto data = static_cast<const Chat*>(msg);
 	getParent()->getEventDispatcher()->dispatchCustomEvent("update_chat", const_cast<char *>(data->chat()->c_str()));
 }
+
 
 void RoomManager::sendChat(const std::string & text)
 {

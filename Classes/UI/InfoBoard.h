@@ -21,7 +21,8 @@ public:
 
 	void changeBoard(Building* building);
 	void changeBoard(Unit* unit);
-
+	
+	void clearBoard();
 private:
 	void createBuildingButton(Building::BuildingType type);
 	void createUnitButton(Unit::UnitType type);
@@ -29,7 +30,7 @@ private:
 	void showInfo(Building* building);
 	void showInfo(Unit* unit);
 
-	void clearBoard();
+	
 
 	Sprite* _board;
 

@@ -16,7 +16,7 @@ USING_NS_CC;
 #define SALARY_MAX 5 //√ø0.5√Î
 #define ORIGIN_SALARY 0
 #define SALARY_ONE 1
-#define ORIGIN_MONEY 100
+#define ORIGIN_MONEY 1000
 #define ORIGIN_ELECTRIC 10
 
 //int _armyTag = 100;
@@ -55,11 +55,15 @@ public:
     //true = terran , false = protoss
 	bool _team;
 	bool _enemyTeam;
+
+	void gameOver(bool win);
 private:
 	Client * client;
 
 	std::vector<Rect> _mine;
 	void initMine();
+
+	void over(float dt);
 
 	void salaryUpdate(float dt);
 

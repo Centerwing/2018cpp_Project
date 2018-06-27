@@ -2,8 +2,10 @@
 #include"Element/User.h"
 #include"Network/MyGame_generated.h"
 #include"MapLayer.h"
+#include"UI/InfoBoard.h"
 
 #include"cocos2d.h"
+#include"SimpleAudioEngine.h"
 
 USING_NS_CC;
 using namespace MyGame;
@@ -45,8 +47,11 @@ void GameManager::clearSelectedBox()
 {
 	for (auto iter : _selectedBox)
 	{
-		iter->_isSelected = false;
-		iter->setOpacity(255);
+		if (iter)
+		{
+			iter->_isSelected = false;
+			iter->unSelected();
+		}
 	}
 	_selectedBox.clear();
 }
@@ -156,7 +161,10 @@ void GameManager::onMove(const void* msg)
 	auto target = static_cast<Unit*>(MapLayer::getInstance()->getChildByTag(data->tag()));
 	Vec2 pos(data->x(), data->y());
 
-	target->move(pos);
+	if (target)
+	{
+		target->move(pos);
+	}
 }
 
 
@@ -166,7 +174,10 @@ void GameManager::onAttack(const void* msg)
 	auto attacker = static_cast<Unit*>(MapLayer::getInstance()->getChildByTag(data->attacker()));
 	auto target = static_cast<Element*>(MapLayer::getInstance()->getChildByTag(data->target()));
 
-	attacker->attack(target);
+	if (target&&attacker)
+	{
+		attacker->attack(target);
+	}
 }
 
 
@@ -227,4 +238,24 @@ void GameManager::onCreateUnit(const void* msg)
 	unit->setTag(GameManager::getInstance()->_enemyTag++);
 
 	MapLayer::getInstance()->addChild(unit);
+}
+
+
+void GameManager::gameOver(bool win)
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(win ? "music/win.mp3" : "music/lose.mp3");
+
+	auto pLabel = Label::create(win ? "You Win!" : "You Lose!", "fonts/Marker Felt.ttf", 82);
+	pLabel->setTextColor(Color4B::WHITE);
+	pLabel->setPosition(Director::getInstance()->getVisibleSize() / 2);
+	InfoBoard::getInstance()->addChild(pLabel,5);
+
+	scheduleOnce(schedule_selector(GameManager::over, this), 5);
+}
+
+
+void GameManager::over(float dt)
+{
+	Director::getInstance()->popScene();
 }

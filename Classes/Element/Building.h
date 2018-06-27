@@ -22,6 +22,9 @@ public:
 
 	virtual void getDamage(unsigned damage);
 
+	virtual void setSelected();
+	virtual void unSelected();
+
 	//bool _isSelected;
 	//bool _isEnemy;
 

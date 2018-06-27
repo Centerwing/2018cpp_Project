@@ -19,7 +19,7 @@ Building* Building::create(BuildingType type,bool isEnemy)
 	pBuilding->_isSelected = false;
 	pBuilding->_isEnemy = isEnemy;
 
-	pBuilding->autorelease();
+	//pBuilding->autorelease();
 
 	if (isEnemy)
 		GameManager::getInstance()->_enemyList.insert(pBuilding);
@@ -49,7 +49,7 @@ void Building::createListener()
 
 				InfoBoard::getInstance()->changeBoard(this);
 
-				target->setOpacity(180);
+				target->setSelected();
 				target->_isSelected = true;
 			}
 			else
@@ -66,7 +66,7 @@ void Building::createPhysics()
 	PhysicsBody* pBody = PhysicsBody::createBox(this->getContentSize());
 	pBody->setGravityEnable(false);
 	pBody->setRotationEnable(false);
-	pBody->setMass(60000);
+	pBody->setMass(80000);
 	//pBody->setDynamic(false);
 
 	this->setPhysicsBody(pBody);
@@ -123,41 +123,71 @@ void Building::initBuilding(BuildingType type,bool isEnemy)
 
 void Building::die()
 {
-	MapLayer::getInstance()->removeChild(this);
+	if (!GameManager::getInstance()->_selectedBox.empty() && GameManager::getInstance()->_selectedBox[0] == this)
+	{
+		GameManager::getInstance()->clearSelectedBox();
+
+		InfoBoard::getInstance()->clearBoard();
+	}
+
 	if (this->_isEnemy)
 	{
 		GameManager::getInstance()->_enemyList.erase(this);
 	}
 
-	this->release();
+	MapLayer::getInstance()->removeChild(this);
+
+	if (this->_type == Building::BuildingType::BASE)
+	{
+		GameManager::getInstance()->gameOver(this->_isEnemy);
+	}
+
+	//this->release();
 }
 
 
 void Building::getDamage(unsigned damage)
 {
-	this->_health -= damage;
-
-	if (this->_health < 0)
+	if (this->_health > 0)
 	{
-		auto animation = Animation::create();
-		animation->addSpriteFrameWithFile("element/die/building/die1.png");
-		animation->addSpriteFrameWithFile("element/die/building/die2.png");
-		animation->addSpriteFrameWithFile("element/die/building/die3.png");
-		animation->addSpriteFrameWithFile("element/die/building/die4.png");
-		animation->addSpriteFrameWithFile("element/die/building/die5.png");
-		animation->addSpriteFrameWithFile("element/die/building/die6.png");
-		animation->addSpriteFrameWithFile("element/die/building/die7.png");////////////////////
-		animation->setLoops(1);
-		animation->setDelayPerUnit(0.04);
+		this->_health -= damage;
 
-		auto animate = Animate::create(animation);
+		if (!GameManager::getInstance()->_selectedBox.empty() && GameManager::getInstance()->_selectedBox[0] == this)
+		{
+			InfoBoard::getInstance()->changeBoard(this);
+		}
 
-		auto godie = CallFunc::create(CC_CALLBACK_0(Building::die, this));
+		if (this->_health <= 0)
+		{
+			auto animation = Animation::create();
+			animation->addSpriteFrameWithFile("element/die/building/die1.png");
+			animation->addSpriteFrameWithFile("element/die/building/die2.png");
+			animation->addSpriteFrameWithFile("element/die/building/die3.png");
+			animation->addSpriteFrameWithFile("element/die/building/die4.png");
+			animation->addSpriteFrameWithFile("element/die/building/die5.png");
+			animation->addSpriteFrameWithFile("element/die/building/die6.png");
+			animation->setLoops(1);
+			animation->setDelayPerUnit(0.04);
 
-		auto sequence = Sequence::create(animate, godie, NULL);
+			auto animate = Animate::create(animation);
 
-		//如果不先去除PhysicsBody 会有bug
-		this->getPhysicsBody()->removeFromWorld();
-		this->runAction(sequence);
+			auto die = CallFunc::create(CC_CALLBACK_0(Building::die, this));
+
+			auto sequence = Sequence::create(animate, die, NULL);
+
+			this->runAction(sequence);
+		}
 	}
+}
+
+
+void Building::setSelected()
+{
+	this->setColor(Color3B(150,255,150));
+}
+
+
+void Building::unSelected()
+{
+	this->setColor(Color3B(255, 255, 255));
 }

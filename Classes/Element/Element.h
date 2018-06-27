@@ -13,8 +13,10 @@ public:
 
 	int _price;
 	int _health;
-	virtual void getDamage(unsigned damage);
+	virtual void getDamage(unsigned damage)=0;
 
+	virtual void setSelected()=0;
+	virtual void unSelected()=0;
 private:
 
 };

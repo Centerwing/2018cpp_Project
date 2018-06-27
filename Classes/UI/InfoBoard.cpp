@@ -6,7 +6,8 @@
 #include"Manager/GameManager.h"
 
 #include"cocos2d.h"
-#include"ui\UIButton.h"
+#include"ui/UIButton.h"
+#include"UI/CocosGUI.h"
 #include"SimpleAudioEngine.h"
 #include<string>
 
@@ -46,6 +47,8 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 	{
 		auto famer = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/famer.jpg" : "Element/p/famer.jpg");
 
+		famer->setSwallowTouches(true);
+
 		famer->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
@@ -59,6 +62,10 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				{
 					auto unit = Unit::create(Unit::UnitType::FAMER);
 					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
+
+					//加一个小的位置偏移，防止两面位置不同步
+					pos.y += 50;
+
 					unit->setPosition(pos);
 					GameManager::getInstance()->_money -= 50;
 					//GameManager::getInstance()->_salary += 10;
@@ -90,6 +97,8 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 	{
 		auto fighter = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/fighter.jpg" : "Element/p/fighter.jpg");
 
+		fighter->setSwallowTouches(true);
+
 		fighter->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
@@ -103,6 +112,10 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				{
 					auto unit = Unit::create(Unit::UnitType::WARRIOR);
 					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
+
+					//加一个小的位置偏移，防止两面位置不同步
+					pos.y += 50;
+
 					unit->setPosition(pos);
 					GameManager::getInstance()->_money -= 75;
 
@@ -138,6 +151,8 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 	{
 		auto warrior = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/warrior.jpg" : "Element/p/warrior.jpg");
 
+		warrior->setSwallowTouches(true);
+
 		warrior->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
@@ -151,6 +166,10 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				{
 					auto unit = Unit::create(Unit::UnitType::TANK);
 					auto pos = GameManager::getInstance()->_selectedBox[0]->getPosition();
+
+					//加一个小的位置偏移，防止两面位置不同步
+					pos.y += 50;
+
 					unit->setPosition(pos);
 					GameManager::getInstance()->_money -= 125;
 
@@ -162,8 +181,7 @@ void InfoBoard::createBuildingButton(Building::BuildingType type)
 				}
 				else if (GameManager::getInstance()->_money < 50)
 				{
-					/* 提示金钱不足
-					*/
+					//提示金钱不足
 					auto alert = Label::create("Not enoough money!", "fonts/arial.ttf", 32);
 					alert->setPosition(512, 226);
 					this->addChild(alert, 1, 11);
@@ -188,6 +206,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 	{
 		/*====================建造兵营按钮=======================*/
 		auto barrack = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/barrack_b.jpg" : "Element/p/barrack_b.jpg");
+
+		barrack->setSwallowTouches(true);
 
 		barrack->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
@@ -301,6 +321,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 		/*====================建造水晶按钮=======================*/
 		auto crystal = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/crystal_b.jpg" : "Element/p/crystal_b.jpg");
 
+		crystal->setSwallowTouches(true);
+
 		crystal->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
 			if (type == ui::Widget::TouchEventType::ENDED)
@@ -401,6 +423,8 @@ void InfoBoard::createUnitButton(Unit::UnitType type)
 
 		/*====================建造机械厂按钮=======================*/
 		auto machinery = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/machinery_b.jpg" : "Element/p/machinery_b.jpg");
+
+		machinery->setSwallowTouches(true);
 
 		machinery->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
 		{
@@ -596,9 +620,15 @@ void InfoBoard::showInfo(Building* build)
 {
 	if (build->_type == Building::BuildingType::BASE)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/1500", "fonts/arial.ttf", 36);
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(build->_health * 100 / 1500);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/1500", "fonts/arial.ttf", 24);
 		pLabel->setPosition(512, 100);
-		_board->addChild(pLabel, 1);
+		_board->addChild(pLabel, 2);
+
 		auto pTitle = Label::create("Base", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
@@ -606,9 +636,15 @@ void InfoBoard::showInfo(Building* build)
 	}
 	else if (build->_type == Building::BuildingType::BARRACK)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/1000", "fonts/arial.ttf", 36);
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(build->_health * 100 / 1000);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/1000", "fonts/arial.ttf", 24);
 		pLabel->setPosition(512, 100);
-		_board->addChild(pLabel, 1);
+		_board->addChild(pLabel, 2);
+
 		auto pTitle = Label::create("Barrack", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
@@ -616,9 +652,15 @@ void InfoBoard::showInfo(Building* build)
 	}
 	else if (build->_type == Building::BuildingType::CRYSTAL)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/400", "fonts/arial.ttf", 36);
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(build->_health * 100 / 400);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/400", "fonts/arial.ttf", 24);
 		pLabel->setPosition(512, 100);
-		_board->addChild(pLabel, 1);
+		_board->addChild(pLabel, 2);
+
 		auto pTitle = Label::create("Crystal", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
@@ -626,16 +668,20 @@ void InfoBoard::showInfo(Building* build)
 	}
 	else if (build->_type == Building::BuildingType::MACHINERY)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/1250", "fonts/arial.ttf", 36);
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(build->_health * 100 / 1250);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/1250", "fonts/arial.ttf", 24);
 		pLabel->setPosition(512, 100);
-		_board->addChild(pLabel, 1);
+		_board->addChild(pLabel, 2);
+
 		auto pTitle = Label::create("Machinery", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
-
-	// 无法实时显示血量
 }
 
 
@@ -643,9 +689,15 @@ void InfoBoard::showInfo(Unit* unit)
 {
 	if (unit->_type == Unit::UnitType::FAMER)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/45", "fonts/arial.ttf", 36);
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(unit->_health * 100 / 45);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/45", "fonts/arial.ttf", 24);
 		pLabel->setPosition(512, 100);
-		_board->addChild(pLabel, 1);
+		_board->addChild(pLabel, 2);
+
 		auto pTitle = Label::create("Famer", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(unit->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
@@ -653,9 +705,15 @@ void InfoBoard::showInfo(Unit* unit)
 	}
 	else if (unit->_type == Unit::UnitType::WARRIOR)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/45", "fonts/arial.ttf", 36);
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(unit->_health * 100 / 45);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/45", "fonts/arial.ttf", 24);
 		pLabel->setPosition(512, 100);
-		_board->addChild(pLabel, 1);
+		_board->addChild(pLabel, 2);
+
 		auto pTitle = Label::create("Fighter", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(unit->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
@@ -663,25 +721,28 @@ void InfoBoard::showInfo(Unit* unit)
 	}
 	else if (unit->_type == Unit::UnitType::TANK)
 	{
-		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/125", "fonts/arial.ttf", 36);
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(unit->_health * 100 / 125);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(unit->_health) + "/125", "fonts/arial.ttf", 24);
 		pLabel->setPosition(512, 100);
-		_board->addChild(pLabel, 1);
+		_board->addChild(pLabel, 2);
+
 		auto pTitle = Label::create("Warrior", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(unit->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);
 	}
-
-	// 无法实时显示血量
 }
 
 
 void InfoBoard::moneyInfoUpdate(float dt)
 {
 	removeChild(_moneyInfo);
-	createMoneyInfo();
 
-	//clearBoard();
+	createMoneyInfo();
 }
 
 

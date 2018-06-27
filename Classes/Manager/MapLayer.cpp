@@ -128,7 +128,7 @@ void MapLayer::createSelectListener()
 							GameManager::getInstance()->_selectedBox.push_back(iter);
 						}
 
-						iter->setOpacity(150);
+						iter->setSelected();
 						iter->_isSelected = true;
 					}
 				}
