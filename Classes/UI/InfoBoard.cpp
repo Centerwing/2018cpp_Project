@@ -219,47 +219,6 @@ void InfoBoard::createBuildingButton(Building* build)
 
 	else if (type == Building::BuildingType::ACADEMY)
 	{
-		//升级攻防按钮
-		auto levelup = ui::Button::create(GameManager::getInstance()->_team ? "Element/attack.jpg" : "Element/attack.jpg");
-
-		levelup->setTitleText("175");
-		levelup->setTitleFontSize(24);
-		levelup->setTitleColor(Color3B::YELLOW);
-
-		levelup->setSwallowTouches(true);
-
-		levelup->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
-		{
-			if (type == ui::Widget::TouchEventType::ENDED&&build->_buildBar->getPercent() == 0)
-			{
-				if (UserDefault::getInstance()->
-					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
-
-				auto button = static_cast<ui::Button*>(pRef);
-
-				if (GameManager::getInstance()->_money >= 175)
-				{
-					GameManager::getInstance()->_money -= 175;
-
-					for (auto iter : GameManager::getInstance()->_unitList)
-					{
-						iter->_attr.attack += 25;
-					}
-				}
-				else if (GameManager::getInstance()->_money < 175)
-				{
-					//提示金钱不足
-					auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
-					alert->setPosition(512, 226);
-					this->addChild(alert, 1, 11);
-					alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
-				}
-			}
-		});
-
-		levelup->setPosition(Vec2(770, 150));
-		_board->addChild(levelup, 1);
-
 		//升级攻击范围按钮
 		auto rangeup = ui::Button::create(GameManager::getInstance()->_team ? "Element/range.jpg" : "Element/range.jpg");
 
@@ -298,7 +257,7 @@ void InfoBoard::createBuildingButton(Building* build)
 			}
 		});
 
-		rangeup->setPosition(Vec2(870, 150));
+		rangeup->setPosition(Vec2(770, 150));
 		_board->addChild(rangeup, 1);
 	}
 }
