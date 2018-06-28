@@ -16,9 +16,7 @@ private:
 	void menuPlayCallback(Ref* pRef);
 	void menuSettingCallback(Ref* pRef);
 	void menuHelpCallback(Ref* pRef);
-	void menuExitCallback(Ref* pRef);
-
-	
+	void menuExitCallback(Ref* pRef);	
 };
 
 #endif

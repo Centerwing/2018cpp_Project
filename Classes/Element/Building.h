@@ -17,7 +17,8 @@ public:
 		BASE,
 		BARRACK,
 		CRYSTAL,
-		MACHINERY
+		MACHINERY,
+		AIRPORT
 	} _type;
 
 	static Building* create(BuildingType type, bool isEnemy = false);
@@ -30,11 +31,7 @@ public:
 	ui::LoadingBar* _buildBar;
 	
 	void createUnit();
-	//bool _isSelected;
-	//bool _isEnemy;
 
-	//unsigned _electric;
-	
 private:
 	Unit * _unit;
 	Vec2 _pos;

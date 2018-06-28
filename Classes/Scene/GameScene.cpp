@@ -51,8 +51,8 @@ bool GameScene::init()
 
 	if (CocosDenshion::SimpleAudioEngine::sharedEngine()->isBackgroundMusicPlaying())
 	{
-		//CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/ShortChangeHero.mp3", true);
-		//CocosDenshion::SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(0.4);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/ShortChangeHero.mp3", true);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(0.4);
 	}
 
 	return true;

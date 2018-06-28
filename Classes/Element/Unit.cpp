@@ -99,9 +99,7 @@ using namespace MyGame;
  }
 
 
- /**
- *各单位参数可以在这里设置
- */
+ //各单位参数可以在这里设置
  void Unit::initUnit(UnitType type,bool isEnemy)
  {
 	 switch (type)
@@ -112,7 +110,7 @@ using namespace MyGame;
 		 else
 			 this->initWithFile(GameManager::getInstance()->_team ? "Element/t/famer.jpg" : "Element/p/famer.jpg");
 		 this->_type = UnitType::FAMER;
-		 this->_attr = { 0,0.000002f,0. };
+		 this->_attr = { 0,0.01f,0. };
 		 this->_health = 45;
 		 this->_attackMode = false;
 		 this->_status = Status::STAND;
@@ -125,7 +123,7 @@ using namespace MyGame;
 		 else
 			 this->initWithFile(GameManager::getInstance()->_team ? "Element/t/fighter.jpg" : "Element/p/fighter.jpg");
 		 this->_type = UnitType::WARRIOR;
-		 this->_attr = { 150,0.02f,256. };//////attack=6
+		 this->_attr = { 22,0.01f,256. };
 		 this->_health = 45;
 		 this->_attackMode = true;
 		 this->_status = Status::STAND;
@@ -138,8 +136,21 @@ using namespace MyGame;
 		 else
 			 this->initWithFile(GameManager::getInstance()->_team ? "Element/t/warrior.jpg" : "Element/p/warrior.jpg");
 		 this->_type = UnitType::TANK;
-		 this->_attr = { 500,0.025f,256. };//////attack=3
+		 this->_attr = { 45,0.015f,512. };
 		 this->_health = 125;
+		 this->_attackMode = true;
+		 this->_status = Status::STAND;
+
+		 break;
+
+	 case UnitType::GHOST:
+		 if (isEnemy)
+			 this->initWithFile(GameManager::getInstance()->_enemyTeam ? "Element/t/ghost.jpg" : "Element/p/ghost.jpg");
+		 else
+			 this->initWithFile(GameManager::getInstance()->_team ? "Element/t/ghost.jpg" : "Element/p/ghost.jpg");
+		 this->_type = UnitType::GHOST;
+		 this->_attr = { 100,0.015f,512. };
+		 this->_health = 250;
 		 this->_attackMode = true;
 		 this->_status = Status::STAND;
 
@@ -188,7 +199,7 @@ using namespace MyGame;
 
 		 _bullet->runAction(sequence);
 	 }
-	 else if (this->_type == Unit::UnitType::TANK)
+	 else if (this->_type == Unit::UnitType::TANK||this->_type==Unit::UnitType::GHOST)
 	 {
 		 _bullet = Sprite::create("element/bullet/warrior/bullet1.png");
 		 _bullet->setPosition(this->getPosition());
@@ -356,6 +367,9 @@ using namespace MyGame;
 		 case Unit::UnitType::TANK:
 			 this->setTexture("element/t/warriorSelected.jpg");
 			 break;
+		 case Unit::UnitType::GHOST:
+			 this->setTexture("element/t/ghostSelected.jpg");
+			 break;
 		 }
 	 }
 	 else
@@ -370,6 +384,9 @@ using namespace MyGame;
 			 break;
 		 case Unit::UnitType::TANK:
 			 this->setTexture("element/p/warriorSelected.jpg");
+			 break;
+		 case Unit::UnitType::GHOST:
+			 this->setTexture("element/p/ghostSelected.jpg");
 			 break;
 		 }
 	 }
@@ -390,6 +407,9 @@ using namespace MyGame;
 			 break;
 		 case Unit::UnitType::TANK:
 			 this->setTexture("element/t/warrior.jpg");
+			 break;		 
+		 case Unit::UnitType::GHOST:
+			 this->setTexture("element/t/ghost.jpg");
 			 break;
 		 }
 	 }
@@ -405,6 +425,9 @@ using namespace MyGame;
 			 break;
 		 case Unit::UnitType::TANK:
 			 this->setTexture("element/p/warrior.jpg");
+			 break;
+		 case Unit::UnitType::GHOST:
+			 this->setTexture("element/p/ghost.jpg");
 			 break;
 		 }
 	 }

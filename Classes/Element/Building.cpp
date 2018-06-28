@@ -43,6 +43,11 @@ void Building::createListener()
 
 		if (event->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
 		{
+			if (this->getPhysicsBody()->isDynamic())
+			{
+				this->getPhysicsBody()->setDynamic(false);
+			}
+
 			Vec2 locationInNode = target->convertToNodeSpace(location);
 			Size s = target->getContentSize();
 			Rect rect = Rect(0, 0, s.width, s.height);
@@ -77,8 +82,7 @@ void Building::createPhysics()
 	this->setPhysicsBody(pBody);
 }
 
-/* 各单位参数可以在这里设置
- */
+//各单位参数可以在这里设置
 void Building::initBuilding(BuildingType type,bool isEnemy) 
 {
 	switch (type)
@@ -115,6 +119,15 @@ void Building::initBuilding(BuildingType type,bool isEnemy)
 		else
 			this->initWithFile(GameManager::getInstance()->_team ? "Element/t/machinery.png" : "Element/p/machinery.png");
 		this->_type = BuildingType::MACHINERY;
+		this->_health = 1250;
+
+		break;
+	case BuildingType::AIRPORT:
+		if (isEnemy)
+			this->initWithFile(GameManager::getInstance()->_enemyTeam ? "Element/t/airport.png" : "Element/p/airport.png");
+		else
+			this->initWithFile(GameManager::getInstance()->_team ? "Element/t/airport.png" : "Element/p/airport.png");
+		this->_type = BuildingType::AIRPORT;
 		this->_health = 1250;
 
 		break;
@@ -219,6 +232,10 @@ void Building::buildUpdate(float dt)
 		{
 			type = Unit::UnitType::TANK;
 		}
+		else if (this->_type == BuildingType::AIRPORT)
+		{
+			type = Unit::UnitType::GHOST;
+		}
 
 		auto unit = Unit::create(type);
 		auto pos = this->getPosition();
@@ -228,8 +245,6 @@ void Building::buildUpdate(float dt)
 
 		unit->setPosition(pos);
 		unit->setTag(GameManager::getInstance()->_armyTag++);
-
-		GameManager::getInstance()->_money -= 50;
 
 		GameManager::getInstance()->createUnit(unit->_type, pos);
 
@@ -245,5 +260,5 @@ void Building::createUnit()
 	_buildBar->setPercent(2);
 
 	//单位建造时间可以在这里修改
-	schedule(schedule_selector(Building::buildUpdate), 0.25);
+	schedule(schedule_selector(Building::buildUpdate), 0.2);
 }

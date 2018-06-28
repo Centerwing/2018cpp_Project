@@ -15,7 +15,8 @@ public:
 	{
 		FAMER,
 		WARRIOR,
-		TANK
+		TANK,
+		GHOST
 	} _type;
 
 	static Unit* create(UnitType type, bool isEnemy = false);
@@ -24,6 +25,7 @@ public:
 	{
 		unsigned attack;
 		float speed;
+		//¹¥»÷·¶Î§
 		float range;
 	} _attr;
 
