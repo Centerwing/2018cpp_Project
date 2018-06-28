@@ -75,8 +75,7 @@ void InfoBoard::createBuildingButton(Building* build)
 				}	
 				else if (GameManager::getInstance()->_money < 50)
 				{
-					/* 提示金钱不足
-					 */
+					//提示金钱不足
 					auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
 					alert->setPosition(512, 226);
 					this->addChild(alert, 1, 11);
@@ -117,8 +116,7 @@ void InfoBoard::createBuildingButton(Building* build)
 				}
 				else if (GameManager::getInstance()->_money < 50)
 				{
-					/* 提示金钱不足
-					*/
+					//提示金钱不足
 					auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
 					alert->setPosition(512, 226);
 					this->addChild(alert, 1, 11);
@@ -218,6 +216,91 @@ void InfoBoard::createBuildingButton(Building* build)
 		ghost->setPosition(Vec2(770, 150));
 		_board->addChild(ghost, 1);
 	}
+
+	else if (type == Building::BuildingType::ACADEMY)
+	{
+		//升级攻防按钮
+		auto levelup = ui::Button::create(GameManager::getInstance()->_team ? "Element/attack.jpg" : "Element/attack.jpg");
+
+		levelup->setTitleText("175");
+		levelup->setTitleFontSize(24);
+		levelup->setTitleColor(Color3B::YELLOW);
+
+		levelup->setSwallowTouches(true);
+
+		levelup->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
+		{
+			if (type == ui::Widget::TouchEventType::ENDED&&build->_buildBar->getPercent() == 0)
+			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
+				auto button = static_cast<ui::Button*>(pRef);
+
+				if (GameManager::getInstance()->_money >= 175)
+				{
+					GameManager::getInstance()->_money -= 175;
+
+					for (auto iter : GameManager::getInstance()->_unitList)
+					{
+						iter->_attr.attack += 25;
+					}
+				}
+				else if (GameManager::getInstance()->_money < 175)
+				{
+					//提示金钱不足
+					auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
+					alert->setPosition(512, 226);
+					this->addChild(alert, 1, 11);
+					alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
+				}
+			}
+		});
+
+		levelup->setPosition(Vec2(770, 150));
+		_board->addChild(levelup, 1);
+
+		//升级攻击范围按钮
+		auto rangeup = ui::Button::create(GameManager::getInstance()->_team ? "Element/range.jpg" : "Element/range.jpg");
+
+		rangeup->setTitleText("175");
+		rangeup->setTitleFontSize(24);
+		rangeup->setTitleColor(Color3B::YELLOW);
+
+		rangeup->setSwallowTouches(true);
+
+		rangeup->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
+		{
+			if (type == ui::Widget::TouchEventType::ENDED&&build->_buildBar->getPercent() == 0)
+			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
+				auto button = static_cast<ui::Button*>(pRef);
+
+				if (GameManager::getInstance()->_money >= 175)
+				{
+					GameManager::getInstance()->_money -= 175;
+
+					for (auto iter : GameManager::getInstance()->_unitList)
+					{
+						iter->_attr.range += 125;
+					}
+				}
+				else if (GameManager::getInstance()->_money < 175)
+				{
+					//提示金钱不足
+					auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
+					alert->setPosition(512, 226);
+					this->addChild(alert, 1, 11);
+					alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
+				}
+			}
+		});
+
+		rangeup->setPosition(Vec2(870, 150));
+		_board->addChild(rangeup, 1);
+	}
 }
 
 
@@ -300,7 +383,7 @@ void InfoBoard::createUnitButton(Unit* unit)
 						else if (GameManager::getInstance()->_money < 150)
 						{
 							//提示金钱不足
-							auto alert = Label::create("Not enoough money!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 226);
 							this->addChild(alert, 1, 11);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
@@ -309,7 +392,7 @@ void InfoBoard::createUnitButton(Unit* unit)
 						else if (GameManager::getInstance()->_electric < 10)
 						{
 							//提示电力不足
-							auto alert = Label::create("Not enoough electric!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("Not enough electric!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 256);
 							this->addChild(alert, 1, 12);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertE), 3.0);
@@ -412,7 +495,7 @@ void InfoBoard::createUnitButton(Unit* unit)
 						else if (GameManager::getInstance()->_money < 100)
 						{
 							//提示金钱不足
-							auto alert = Label::create("Not enoough money!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 226);
 							this->addChild(alert, 1, 11);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
@@ -517,7 +600,7 @@ void InfoBoard::createUnitButton(Unit* unit)
 						{
 							/*提示金钱不足
 							*/
-							auto alert = Label::create("Not enoough money!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 226);
 							this->addChild(alert, 1, 11);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
@@ -526,7 +609,7 @@ void InfoBoard::createUnitButton(Unit* unit)
 						else if (GameManager::getInstance()->_electric < 10)
 						{
 							//提示电力不足
-							auto alert = Label::create("Not enoough electric!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("Not enough electric!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 256);
 							this->addChild(alert, 1, 12);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertE), 3.0);
@@ -606,7 +689,8 @@ void InfoBoard::createUnitButton(Unit* unit)
 					{
 						auto loca = MapLayer::getInstance()->convertToNodeSpace(event->getLocationInView());
 
-						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 150)
+						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 150
+							&& GameManager::getInstance()->_electric >= 10)
 						{
 							if (UserDefault::getInstance()->
 								getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
@@ -629,10 +713,18 @@ void InfoBoard::createUnitButton(Unit* unit)
 						else if (GameManager::getInstance()->_money < 150)
 						{
 							//提示金钱不足
-							auto alert = Label::create("Not enoough money!", "fonts/arial.ttf", 32);
+							auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
 							alert->setPosition(512, 226);
 							this->addChild(alert, 1, 11);
 							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
+						}
+						else if (GameManager::getInstance()->_electric < 10)
+						{
+							//提示电力不足
+							auto alert = Label::create("Not enough electric!", "fonts/arial.ttf", 32);
+							alert->setPosition(512, 256);
+							this->addChild(alert, 1, 12);
+							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertE), 3.0);
 						}
 						else if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) >= 250)
 						{
@@ -658,6 +750,118 @@ void InfoBoard::createUnitButton(Unit* unit)
 
 		airport->setPosition(Vec2(770, 70));
 		_board->addChild(airport);
+
+
+		/*===============建造科学院按钮================*/
+		auto academy = ui::Button::create(GameManager::getInstance()->_team ? "Element/t/academy_b.jpg" : "Element/p/academy_b.jpg");
+
+		academy->setTitleText("100");
+		academy->setTitleFontSize(24);
+		academy->setTitleColor(Color3B::YELLOW);
+
+		academy->setSwallowTouches(true);
+
+		academy->addTouchEventListener([=](Ref* pRef, ui::Widget::TouchEventType type)
+		{
+			if (type == ui::Widget::TouchEventType::ENDED)
+			{
+				if (UserDefault::getInstance()->
+					getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/move.mp3");
+
+				auto button = static_cast<ui::Button*>(pRef);
+
+				//创建图标跟随指针
+				auto lis = EventListenerMouse::create();
+				auto icon = Sprite::create(GameManager::getInstance()->_team ? "Element/t/academy.png" : "Element/p/academy.png");
+				icon->setOpacity(100);
+				addChild(icon, 1, 1);
+				lis->onMouseMove = [=](EventMouse* event)
+				{
+					icon->setPosition(event->getCursorX(),
+						event->getCursorY());
+
+					if ((GameManager::getInstance()->_selectedBox[0]->convertToNodeSpace(Vec2(event->getCursorX(),
+						event->getCursorY()))).length() < 250.0)
+					{
+						icon->setColor(Color3B::GREEN);
+					}
+					else
+					{
+						icon->setColor(Color3B::RED);
+					}
+
+				};
+				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(lis, icon);
+
+				//点击建造的监听器
+				auto pListener = EventListenerMouse::create();
+				pListener->onMouseDown = [=](EventMouse* event)
+				{
+					if (event->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+					{
+						auto loca = MapLayer::getInstance()->convertToNodeSpace(event->getLocationInView());
+
+						if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) < 250 && GameManager::getInstance()->_money >= 100
+							&& GameManager::getInstance()->_electric >= 10)
+						{
+							if (UserDefault::getInstance()->
+								getBoolForKey("Effect"))CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/ButtonClick.mp3");
+
+							auto build = Building::create(Building::BuildingType::ACADEMY);
+							build->setPosition(loca);
+
+							build->setTag(GameManager::getInstance()->_armyTag++);
+
+							GameManager::getInstance()->createBuilding(Building::BuildingType::ACADEMY, loca);
+
+							MapLayer::getInstance()->addChild(build);
+							GameManager::getInstance()->_money -= 100;
+							GameManager::getInstance()->_electric -= 5;
+
+							GameManager::getInstance()->getEventDispatcher()->removeEventListener(pListener);
+							this->removeChildByTag(1);
+						}
+
+						else if (GameManager::getInstance()->_money < 150)
+						{
+							//提示金钱不足
+							auto alert = Label::create("Not enough money!", "fonts/arial.ttf", 32);
+							alert->setPosition(512, 226);
+							this->addChild(alert, 1, 11);
+							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertM), 3.0);
+						}
+						else if (GameManager::getInstance()->_electric < 10)
+						{
+							//提示电力不足
+							auto alert = Label::create("Not enough electric!", "fonts/arial.ttf", 32);
+							alert->setPosition(512, 256);
+							this->addChild(alert, 1, 12);
+							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertE), 3.0);
+						}
+						else if (loca.distance(GameManager::getInstance()->_selectedBox[0]->getPosition()) >= 250)
+						{
+							//提示距离太远
+							auto alert = Label::create("It's too far!", "fonts/arial.ttf", 32);
+							alert->setPosition(512, 286);
+							this->addChild(alert, 1, 13);
+							alert->scheduleOnce(schedule_selector(InfoBoard::removeAlertF), 3.0);
+						}
+
+					}
+
+					//取消点击建造的事件监听,取消图标跟随
+					else if (event->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT)
+					{
+						GameManager::getInstance()->getEventDispatcher()->removeEventListener(pListener);
+						this->removeChildByTag(1);
+					}
+				};
+				GameManager::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pListener, GameManager::getInstance());
+			}
+		});
+
+		academy->setPosition(Vec2(870, 70));
+		_board->addChild(academy);
 	}
 
 	else if (type == Unit::UnitType::WARRIOR)
@@ -840,6 +1044,22 @@ void InfoBoard::showInfo(Building* build)
 		_board->addChild(pLabel, 2);
 
 		auto pTitle = Label::create("Airport", "fonts/arial.ttf", 40);
+		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
+		pTitle->setPosition(512, 150);
+		_board->addChild(pTitle, 1);
+	}
+	else if (build->_type == Building::BuildingType::ACADEMY)
+	{
+		auto health = ui::LoadingBar::create("gameScene/healthBar.png");
+		health->setPercent(build->_health * 100 / 750);
+		health->setPosition(Vec2(512, 100));
+		_board->addChild(health, 1);
+
+		auto pLabel = Label::create("Health: " + std::to_string(build->_health) + "/750", "fonts/arial.ttf", 24);
+		pLabel->setPosition(512, 100);
+		_board->addChild(pLabel, 2);
+
+		auto pTitle = Label::create("Academy", "fonts/arial.ttf", 40);
 		pTitle->setTextColor(build->_isEnemy ? Color4B::RED : Color4B::GREEN);
 		pTitle->setPosition(512, 150);
 		_board->addChild(pTitle, 1);

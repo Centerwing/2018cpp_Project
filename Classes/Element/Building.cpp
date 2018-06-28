@@ -131,6 +131,15 @@ void Building::initBuilding(BuildingType type,bool isEnemy)
 		this->_health = 1250;
 
 		break;
+	case BuildingType::ACADEMY:
+		if (isEnemy)
+			this->initWithFile(GameManager::getInstance()->_enemyTeam ? "Element/t/academy.png" : "Element/p/academy.png");
+		else
+			this->initWithFile(GameManager::getInstance()->_team ? "Element/t/academy.png" : "Element/p/academy.png");
+		this->_type = BuildingType::ACADEMY;
+		this->_health = 750;
+
+		break;
 	default:
 		break;
 	}

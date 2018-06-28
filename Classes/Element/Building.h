@@ -18,7 +18,8 @@ public:
 		BARRACK,
 		CRYSTAL,
 		MACHINERY,
-		AIRPORT
+		AIRPORT,
+		ACADEMY
 	} _type;
 
 	static Building* create(BuildingType type, bool isEnemy = false);
